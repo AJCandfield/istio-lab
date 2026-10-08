@@ -33,6 +33,12 @@ options:
       - arg: --disable=traefik
         nodeFilters:
           - server:*
+      - arg: --service-cidr=10.1.0.0/16
+        nodeFilters:
+          - server:*
+      - arg: --cluster-cidr=10.10.0.0/16
+        nodeFilters:
+          - server:*
   kubeconfig:
     updateDefaultKubeconfig: true
     switchCurrentContext: false
