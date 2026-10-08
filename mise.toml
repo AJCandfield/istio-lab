@@ -1,0 +1,4 @@
+[tools]
+k3d = "5.9.0"
+kubectl = "1.37.1"
+istioctl = "1.31.1"

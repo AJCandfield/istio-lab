@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "dependencyDashboard": true,
+  "enabledManagers": [
+    "mise"
+  ],
+  "minimumReleaseAge": "14 days",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
+  "internalChecksFilter": "strict",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "packageRules": [
+    {
+      "description": "Group and automerge non-major Mise tool updates",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepTypes": [
+        "tools"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "Mise tool updates",
+      "groupSlug": "mise-tool-updates",
+      "automerge": true
+    },
+    {
+      "description": "Keep major updates manual",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
+    }
+  ]
+}
