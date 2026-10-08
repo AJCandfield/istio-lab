@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+  namespace: istio-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+        version: v1
+    spec:
+      containers:
+        - name: orders
+          image: hashicorp/http-echo:1.0
+          args:
+            - "-listen=:8080"
+            - "-text=Hello from ORDERS v1"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders
+  namespace: istio-lab
+spec:
+  selector:
+    app: orders
+  ports:
+    - port: 8080
+      targetPort: 8080
