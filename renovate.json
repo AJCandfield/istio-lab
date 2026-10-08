@@ -9,6 +9,7 @@
   "dependencyDashboard": true,
   "enabledManagers": [
     "github-actions",
+    "helmfile",
     "mise",
     "pre-commit"
   ],
@@ -34,6 +35,19 @@
       "groupName": "Mise tool updates",
       "groupSlug": "mise-tool-updates",
       "automerge": true
+    },
+    {
+      "description": "Keep Istio Helm charts aligned",
+      "matchManagers": [
+        "helmfile"
+      ],
+      "matchPackageNames": [
+        "base",
+        "gateway",
+        "istiod"
+      ],
+      "groupName": "Istio Helm charts",
+      "groupSlug": "istio-helm-charts"
     },
     {
       "description": "Keep major updates manual",
