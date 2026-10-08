@@ -4,7 +4,9 @@ kind: Simple
 metadata:
   name: istio-lab
 
+# Server nodes run the Kubernetes control plane and datastore.
 servers: 1
+# Agent nodes run application workloads without control-plane components.
 agents: 1
 image: rancher/k3s:v1.36.5-k3s1
 
@@ -26,10 +28,11 @@ options:
     wait: true
     timeout: 120s
   k3s:
+    # Extra arguments are passed to matching k3s server or agent processes.
     extraArgs:
       - arg: --disable=traefik
         nodeFilters:
           - server:*
   kubeconfig:
     updateDefaultKubeconfig: true
-    switchCurrentContext: true
+    switchCurrentContext: false
