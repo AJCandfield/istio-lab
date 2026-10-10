@@ -17,28 +17,44 @@ The public age recipient is committed in `.sops.yaml`; never commit the private 
 
 ## Bootstrap
 
-Create the local cluster and bootstrap Flux against the default branch:
+Create the local cluster and install the Flux controllers, then wait for the controllers to roll out:
 
 ```sh
-just cluster-up
-just flux-bootstrap
+k3d cluster create --config k3d.yaml
+kubectl apply --server-side --force-conflicts -k flux/system
+for deploy in $(kubectl -n flux-system get deployments -o jsonpath='{.items[*].metadata.name}'); do
+  kubectl -n flux-system rollout status "deployment/$deploy" --timeout=5m
+done
 ```
 
-The Git source and root Kustomization in `flux/system/gotk-sync.yaml` are applied by the bootstrap recipe rather than the root Kustomization, so the live branch override during feature validation is not reverted by reconciliation.
-
-To validate an unmerged branch, pass its name explicitly:
+Create the Git credential Secret, apply the Git source and root Kustomization, and trigger reconciliation:
 
 ```sh
-just flux-bootstrap feat/migrate-to-flux
+printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system \
+  --from-literal=username=git --from-file=password=/dev/stdin \
+  --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f flux/system/gotk-sync.yaml
+flux reconcile kustomization flux-system --with-source
+flux check
 ```
 
-Inspect reconciliation with `just flux-status`. After merging a feature branch, run `just flux-use-branch main` before deleting the branch.
-
-Open an interactive shell in the debug container with `just debug-curl-up` and remove it with `just debug-curl-down`.
-
-Run repository validation with:
+The Git source in `flux/system/gotk-sync.yaml` defaults to `main` and is applied during bootstrap, not by the root Kustomization, so pointing the live source at an unmerged branch for validation is not reverted by reconciliation:
 
 ```sh
-just validate
+kubectl -n flux-system patch gitrepository flux-system --type=merge -p '{"spec":{"ref":{"branch":"<branch>"}}}'
+flux reconcile kustomization flux-system --with-source
+```
+
+Use the same commands with `main` to switch the cluster back after the branch merges, before deleting the branch.
+
+Inspect reconciliation with `flux get all --all-namespaces`. Run the offline validation and the other repository checks with:
+
+```sh
 pre-commit run --all-files
 ```
+
+Teardown the cluster with `k3d cluster delete istio-lab`.
+
+## Debug container
+
+Open an interactive shell in the debug container with `just debug-curl-up` and remove it with `just debug-curl-down`.
