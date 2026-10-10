@@ -37,14 +37,12 @@
       "automerge": true
     },
     {
-      "description": "Keep Istio Helm charts aligned",
+      "description": "Group Istio Helm chart updates",
       "matchManagers": [
         "helmfile"
       ],
-      "matchPackageNames": [
-        "base",
-        "gateway",
-        "istiod"
+      "matchFileNames": [
+        "helm/istio/helmfile.yaml"
       ],
       "groupName": "Istio Helm charts",
       "groupSlug": "istio-helm-charts"
