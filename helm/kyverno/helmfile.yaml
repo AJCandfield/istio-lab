@@ -14,5 +14,11 @@ releases:
     version: 3.9.1
     values:
       - values.yaml
+    hooks:
+      - events:
+          - presync
+        showlogs: true
+        kubectlApply:
+          filename: namespace.yaml
     labels:
       stack: kyverno
