@@ -19,6 +19,12 @@
       "/(^|/)flux/.+\\.ya?ml$/"
     ]
   },
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/(^|/)flux/.+\\.ya?ml$/",
+      "/(^|/)tools/debug-curl/.+\\.ya?ml$/"
+    ]
+  },
   "minimumReleaseAge": "14 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
   "internalChecksFilter": "strict",

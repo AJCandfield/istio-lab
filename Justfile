@@ -10,8 +10,7 @@ flux-bootstrap branch="main":
     @FLUX_GIT_BRANCH="{{branch}}" mise exec -- bash -euo pipefail -c 'test -n "${FLUX_GITHUB_TOKEN:-}"; [[ "$FLUX_GIT_BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; kubectl apply --server-side --force-conflicts -k flux/system; for deploy in $(kubectl -n flux-system get deployments -o jsonpath='{.items[*].metadata.name}'); do kubectl -n flux-system rollout status "deployment/$deploy" --timeout=5m; done; printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system --from-literal=username=git --from-file=password=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -; kubectl apply -f flux/system/gotk-sync.yaml; kubectl -n flux-system patch gitrepository flux-system --type=merge -p "{\"spec\":{\"ref\":{\"branch\":\"$FLUX_GIT_BRANCH\"}}}"; flux reconcile kustomization flux-system --with-source; flux check'
 
 flux-use-branch branch:
-    @kubectl -n flux-system patch gitrepository flux-system --type=merge -p '{"spec":{"ref":{"branch":"{{branch}}"}}}'
-    @flux reconcile kustomization flux-system --with-source
+    @FLUX_GIT_BRANCH="{{branch}}" mise exec -- bash -euo pipefail -c '[[ "$FLUX_GIT_BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; kubectl -n flux-system patch gitrepository flux-system --type=merge -p "{\"spec\":{\"ref\":{\"branch\":\"$FLUX_GIT_BRANCH\"}}}"; flux reconcile kustomization flux-system --with-source'
 
 flux-status:
     flux get all --all-namespaces
@@ -26,5 +25,5 @@ debug-curl-down:
 
 validate:
     @tmp="$(mktemp)"; trap 'rm -f "$tmp"' EXIT; flux install --export > "$tmp"; diff -u flux/system/gotk-components.yaml "$tmp"
-    @for path in flux/system flux flux/reconciliation flux/components/istio flux/components/kyverno flux/components/kyverno/policies flux/components/istio-lab flux/components/istio-lab/frontend flux/components/istio-lab/orders flux/components/istio-lab/payments; do kubectl kustomize "$path" >/dev/null; done
+    @while IFS= read -r dir; do kubectl kustomize "$dir" >/dev/null; done < <(find flux -name kustomization.yaml -exec dirname {} \; | sort)
     @kubectl apply --dry-run=client --validate=false -f tools/debug-curl/deployment.yaml >/dev/null

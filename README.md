@@ -24,6 +24,8 @@ just cluster-up
 just flux-bootstrap
 ```
 
+The Git source and root Kustomization in `flux/system/gotk-sync.yaml` are applied by the bootstrap recipe rather than the root Kustomization, so the live branch override during feature validation is not reverted by reconciliation.
+
 To validate an unmerged branch, pass its name explicitly:
 
 ```sh
@@ -31,6 +33,8 @@ just flux-bootstrap feat/migrate-to-flux
 ```
 
 Inspect reconciliation with `just flux-status`. After merging a feature branch, run `just flux-use-branch main` before deleting the branch.
+
+Open an interactive shell in the debug container with `just debug-curl-up` and remove it with `just debug-curl-down`.
 
 Run repository validation with:
 
