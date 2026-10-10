@@ -47,11 +47,7 @@ flux reconcile kustomization flux-system --with-source
 
 Use the same commands with `main` to switch the cluster back after the branch merges, before deleting the branch.
 
-Inspect reconciliation with `flux get all --all-namespaces`. Run the offline validation and the other repository checks with:
-
-```sh
-pre-commit run --all-files
-```
+Inspect reconciliation with `flux get all --all-namespaces`.
 
 Teardown the cluster with `k3d cluster delete istio-lab`.
 

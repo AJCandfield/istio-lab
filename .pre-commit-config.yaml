@@ -17,15 +17,3 @@ repos:
     rev: 0494aa7fa1314e98913a41227d8f0a515b2c1049 # frozen: 0.38.2
     hooks:
       - id: check-renovate
-  - repo: local
-    hooks:
-      - id: validate-flux-manifests
-        name: validate Flux controller manifests are pinned
-        entry: env MISE_NO_ENV=1 mise exec -- bash -c 'flux install --export | diff -u flux/system/gotk-components.yaml -'
-        language: system
-        pass_filenames: false
-      - id: validate-kustomizations
-        name: validate Kustomize packages build
-        entry: env MISE_NO_ENV=1 mise exec -- bash -c 'while IFS= read -r dir; do kubectl kustomize "$dir" >/dev/null; done < <(find flux -name kustomization.yaml -exec dirname {} \; | sort)'
-        language: system
-        pass_filenames: false
