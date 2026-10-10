@@ -14,8 +14,8 @@ releases:
     chart: istio/base
     version: 1.31.1
     values:
-      - helm/values/istio/common.yaml
-      - helm/values/istio/base.yaml
+      - values/common.yaml
+      - values/base.yaml
     labels:
       stack: istio
 
@@ -26,7 +26,7 @@ releases:
     needs:
       - istio-system/istio-base
     values:
-      - helm/values/istio/common.yaml
+      - values/common.yaml
     labels:
       stack: istio
 
@@ -38,6 +38,6 @@ releases:
     needs:
       - istio-system/istiod
     values:
-      - helm/values/istio/common.yaml
+      - values/common.yaml
     labels:
       stack: istio
