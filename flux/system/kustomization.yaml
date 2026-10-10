@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - gotk-components.yaml
+patches:
+  - target:
+      kind: Namespace
+      name: flux-system
+    patch: |-
+      - op: add
+        path: /metadata/labels/istio-injection
+        value: disabled
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      namespace: flux-system
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/annotations/sidecar.istio.io~1inject
+        value: "false"

@@ -8,11 +8,23 @@
   ],
   "dependencyDashboard": true,
   "enabledManagers": [
+    "flux",
     "github-actions",
-    "helmfile",
+    "kubernetes",
     "mise",
     "pre-commit"
   ],
+  "flux": {
+    "managerFilePatterns": [
+      "/(^|/)flux/.+\\.ya?ml$/"
+    ]
+  },
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/(^|/)flux/.+\\.ya?ml$/",
+      "/(^|/)tools/debug-curl/.+\\.ya?ml$/"
+    ]
+  },
   "minimumReleaseAge": "14 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
   "internalChecksFilter": "strict",
@@ -39,10 +51,10 @@
     {
       "description": "Group Istio Helm chart updates",
       "matchManagers": [
-        "helmfile"
+        "flux"
       ],
       "matchFileNames": [
-        "helm/istio/helmfile.yaml"
+        "flux/components/istio/*.yaml"
       ],
       "groupName": "Istio Helm charts",
       "groupSlug": "istio-helm-charts"
