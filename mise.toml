@@ -15,6 +15,7 @@ pre-commit = "4.6.2"
 
 [tasks."helm-diff:update"]
 description = "Install or update Helm Diff to the pinned version"
+quiet = true
 run = '''
 previous_version="$(helm diff version 2>/dev/null || printf 'not installed')"
 helm plugin uninstall diff 2>/dev/null || true
