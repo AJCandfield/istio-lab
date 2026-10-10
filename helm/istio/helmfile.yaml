@@ -1,0 +1,43 @@
+repositories:
+  - name: istio
+    url: https://blob.istio.io/istio-release/charts
+
+helmDefaults:
+  kubeContext: k3d-istio-lab
+  wait: true
+  timeout: 300
+
+releases:
+  - name: istio-base
+    namespace: istio-system
+    createNamespace: true
+    chart: istio/base
+    version: 1.31.1
+    values:
+      - values/common.yaml
+      - values/base.yaml
+    labels:
+      stack: istio
+
+  - name: istiod
+    namespace: istio-system
+    chart: istio/istiod
+    version: 1.31.1
+    needs:
+      - istio-system/istio-base
+    values:
+      - values/common.yaml
+    labels:
+      stack: istio
+
+  - name: istio-ingress
+    namespace: istio-ingress
+    createNamespace: true
+    chart: istio/gateway
+    version: 1.31.1
+    needs:
+      - istio-system/istiod
+    values:
+      - values/common.yaml
+    labels:
+      stack: istio
