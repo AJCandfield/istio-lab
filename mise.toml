@@ -16,6 +16,9 @@ pre-commit = "4.6.2"
 [tasks."helm-diff:update"]
 description = "Install or update Helm Diff to the pinned version"
 run = '''
+previous_version="$(helm diff version 2>/dev/null || printf 'not installed')"
 helm plugin uninstall diff 2>/dev/null || true
 SKIP_BIN_INSTALL=1 helm plugin install "$(mise where helm-diff)/diff"
+current_version="$(helm diff version)"
+printf 'Helm Diff: %s -> %s\n' "$previous_version" "$current_version"
 '''
