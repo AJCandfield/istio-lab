@@ -14,7 +14,7 @@ spec:
         namespace: flux-system
       version: "1.31.1"
   driftDetection:
-    mode: enabled
+    mode: warn
   install:
     remediation:
       retries: 3

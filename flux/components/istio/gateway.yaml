@@ -17,7 +17,7 @@ spec:
     - name: istiod
       namespace: istio-system
   driftDetection:
-    mode: enabled
+    mode: warn
   install:
     remediation:
       retries: 3
