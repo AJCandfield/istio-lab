@@ -16,7 +16,7 @@ spec:
   dependsOn:
     - name: istio-base
   driftDetection:
-    mode: enabled
+    mode: warn
   install:
     remediation:
       retries: 3
