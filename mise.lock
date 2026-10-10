@@ -8,13 +8,22 @@ backend = "aqua:helm/helm"
 checksum = "sha256:d3870437e1e95b67f8edbde964156c84a26503f560821d40c542441658934fba"
 url = "https://get.helm.sh/helm-v4.3.0-darwin-arm64.tar.gz"
 
+[[tools.helm-diff]]
+version = "3.15.15"
+backend = "github:databus23/helm-diff"
+
+[tools.helm-diff."platforms.macos-arm64"]
+checksum = "sha256:af2834052ba32fe8006a44a31db16cad30baf1c46f6b59160b092974578d7798"
+url = "https://github.com/databus23/helm-diff/releases/download/v3.15.15/helm-diff-macos-arm64.tgz"
+url_api = "https://api.github.com/repos/databus23/helm-diff/releases/assets/589788384"
+
 [[tools.helmfile]]
 version = "1.8.1"
 backend = "aqua:helmfile/helmfile"
 
 [tools.helmfile."platforms.macos-arm64"]
 checksum = "sha256:62a6b086bdd7a934ff4a36d4974446d7271566b88db200b3956053a9b388fed8"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.1/helmfile_1.8.1_darwin_arm64.tar.gz"
+url = "https://github.com/helmfile/helmfile/releases/download/v1.8.1/helmfile_1.8.1_darwin-arm64.tar.gz"
 
 [[tools.istioctl]]
 version = "1.31.1"
