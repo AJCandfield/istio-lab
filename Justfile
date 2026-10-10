@@ -1,3 +1,7 @@
+kyverno-up:
+    kubectl --context k3d-istio-lab apply -f helm/kyverno/namespace.yaml
+    helmfile --file helm/kyverno/helmfile.yaml sync
+
 debug-curl-up:
     kubectl apply -f manifests/debug-curl.yaml
     kubectl rollout status deployment/debug-curl --namespace istio-lab

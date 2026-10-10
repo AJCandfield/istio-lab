@@ -1,0 +1,22 @@
+admissionController:
+  replicas: 1
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+backgroundController:
+  enabled: true
+  replicas: 1
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+cleanupController:
+  enabled: true
+  replicas: 1
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+reportsController:
+  enabled: true
+  replicas: 1
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
