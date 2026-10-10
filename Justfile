@@ -26,4 +26,3 @@ debug-curl-down:
 validate:
     @tmp="$(mktemp)"; trap 'rm -f "$tmp"' EXIT; flux install --export > "$tmp"; diff -u flux/system/gotk-components.yaml "$tmp"
     @while IFS= read -r dir; do kubectl kustomize "$dir" >/dev/null; done < <(find flux -name kustomization.yaml -exec dirname {} \; | sort)
-    @kubectl apply --dry-run=client --validate=false -f tools/debug-curl/deployment.yaml >/dev/null
