@@ -17,3 +17,10 @@ repos:
     rev: 0494aa7fa1314e98913a41227d8f0a515b2c1049 # frozen: 0.38.2
     hooks:
       - id: check-renovate
+  - repo: local
+    hooks:
+      - id: validate-manifests
+        name: validate manifests
+        entry: env MISE_NO_ENV=1 mise exec -- just validate
+        language: system
+        pass_filenames: false

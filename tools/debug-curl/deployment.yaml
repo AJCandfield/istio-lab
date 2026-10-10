@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug-curl
+  namespace: istio-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug-curl
+  template:
+    metadata:
+      labels:
+        app: debug-curl
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: debug-tools
+          image: nicolaka/netshoot:v0.16
+          command:
+            - sleep
+            - infinity
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_RAW
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

@@ -1,0 +1,29 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: istio-lab
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: istio
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: frontend
+      namespace: istio-lab
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: orders
+      namespace: istio-lab
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: payments
+      namespace: istio-lab
+  interval: 10m
+  path: ./flux/components/istio-lab
+  prune: true
+  retryInterval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m
