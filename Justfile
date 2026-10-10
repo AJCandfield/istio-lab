@@ -7,7 +7,7 @@ cluster-down:
     k3d cluster delete istio-lab
 
 flux-bootstrap branch="main":
-    @FLUX_GIT_BRANCH="{{branch}}" mise exec -- bash -euo pipefail -c 'test -n "${FLUX_GITHUB_TOKEN:-}"; [[ "$FLUX_GIT_BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; kubectl apply --server-side --force-conflicts -k flux/system; kubectl -n flux-system rollout status deployment --all --timeout=5m; printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system --from-literal=username=git --from-file=password=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -; kubectl apply -f flux/system/gotk-sync.yaml; kubectl -n flux-system patch gitrepository flux-system --type=merge -p "{\"spec\":{\"ref\":{\"branch\":\"$FLUX_GIT_BRANCH\"}}}"; flux reconcile kustomization flux-system --with-source; flux check'
+    @FLUX_GIT_BRANCH="{{branch}}" mise exec -- bash -euo pipefail -c 'test -n "${FLUX_GITHUB_TOKEN:-}"; [[ "$FLUX_GIT_BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; kubectl apply --server-side --force-conflicts -k flux/system; for deploy in $(kubectl -n flux-system get deployments -o jsonpath='{.items[*].metadata.name}'); do kubectl -n flux-system rollout status "deployment/$deploy" --timeout=5m; done; printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system --from-literal=username=git --from-file=password=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -; kubectl apply -f flux/system/gotk-sync.yaml; kubectl -n flux-system patch gitrepository flux-system --type=merge -p "{\"spec\":{\"ref\":{\"branch\":\"$FLUX_GIT_BRANCH\"}}}"; flux reconcile kustomization flux-system --with-source; flux check'
 
 flux-use-branch branch:
     @kubectl -n flux-system patch gitrepository flux-system --type=merge -p '{"spec":{"ref":{"branch":"{{branch}}"}}}'
