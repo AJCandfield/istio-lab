@@ -27,6 +27,7 @@ releases:
       - istio-system/istio-base
     values:
       - values/common.yaml
+      - values/istiod.yaml
     labels:
       stack: istio
 
