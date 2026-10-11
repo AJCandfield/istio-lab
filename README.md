@@ -38,6 +38,14 @@ flux reconcile kustomization flux-system --with-source
 flux check
 ```
 
+Clusters created with the previous `./flux` reconciliation path retain that bootstrap-owned setting. Migrate an existing cluster before reconciling this layout:
+
+```sh
+kubectl -n flux-system patch kustomization flux-system --type=merge \
+  -p '{"spec":{"path":"./live/local"}}'
+flux reconcile kustomization flux-system --with-source
+```
+
 The Git source in `live/local/flux-system/gotk-sync.yaml` defaults to `main` and is applied during bootstrap, not by the root Kustomization, so pointing the live source at an unmerged branch for validation is not reverted by reconciliation:
 
 ```sh
