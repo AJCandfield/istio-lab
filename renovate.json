@@ -16,12 +16,14 @@
   ],
   "flux": {
     "managerFilePatterns": [
-      "/(^|/)flux/.+\\.ya?ml$/"
+      "/(^|/)k8s/.+\\.ya?ml$/",
+      "/(^|/)live/.+\\.ya?ml$/"
     ]
   },
   "kubernetes": {
     "managerFilePatterns": [
-      "/(^|/)flux/.+\\.ya?ml$/",
+      "/(^|/)k8s/.+\\.ya?ml$/",
+      "/(^|/)live/.+\\.ya?ml$/",
       "/(^|/)tools/debug-curl/.+\\.ya?ml$/"
     ]
   },
@@ -54,7 +56,7 @@
         "flux"
       ],
       "matchFileNames": [
-        "flux/components/istio/*.yaml"
+        "k8s/components/istio/*.yaml"
       ],
       "groupName": "Istio Helm charts",
       "groupSlug": "istio-helm-charts"

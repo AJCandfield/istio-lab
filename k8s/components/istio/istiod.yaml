@@ -25,10 +25,3 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  values:
-    global:
-      platform: k3d
-    pilot:
-      resources:
-        requests:
-          memory: 512Mi

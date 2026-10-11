@@ -10,7 +10,7 @@ spec:
       name: kyverno
       namespace: kyverno
   interval: 10m
-  path: ./flux/components/kyverno
+  path: ./live/local/kyverno
   prune: true
   retryInterval: 1m
   sourceRef:

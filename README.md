@@ -21,7 +21,7 @@ Create the local cluster and install the Flux controllers, then wait for the con
 
 ```sh
 k3d cluster create --config k3d.yaml
-kubectl apply --server-side --force-conflicts -k flux/system
+kubectl apply --server-side --force-conflicts -k live/local/flux-system
 for deploy in $(kubectl -n flux-system get deployments -o jsonpath='{.items[*].metadata.name}'); do
   kubectl -n flux-system rollout status "deployment/$deploy" --timeout=5m
 done
@@ -33,12 +33,12 @@ Create the Git credential Secret, apply the Git source and root Kustomization, a
 printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system \
   --from-literal=username=git --from-file=password=/dev/stdin \
   --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -f flux/system/gotk-sync.yaml
+kubectl apply -f live/local/flux-system/gotk-sync.yaml
 flux reconcile kustomization flux-system --with-source
 flux check
 ```
 
-The Git source in `flux/system/gotk-sync.yaml` defaults to `main` and is applied during bootstrap, not by the root Kustomization, so pointing the live source at an unmerged branch for validation is not reverted by reconciliation:
+The Git source in `live/local/flux-system/gotk-sync.yaml` defaults to `main` and is applied during bootstrap, not by the root Kustomization, so pointing the live source at an unmerged branch for validation is not reverted by reconciliation:
 
 ```sh
 kubectl -n flux-system patch gitrepository flux-system --type=merge -p '{"spec":{"ref":{"branch":"<branch>"}}}'

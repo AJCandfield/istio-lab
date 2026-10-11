@@ -18,7 +18,7 @@ spec:
       name: istio-ingress
       namespace: istio-ingress
   interval: 10m
-  path: ./flux/components/istio
+  path: ./live/local/istio
   prune: true
   retryInterval: 1m
   sourceRef:

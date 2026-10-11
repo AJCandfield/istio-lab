@@ -20,7 +20,7 @@ spec:
       name: payments
       namespace: istio-lab
   interval: 10m
-  path: ./flux/components/istio-lab
+  path: ./live/local/istio-lab
   prune: true
   retryInterval: 1m
   sourceRef:

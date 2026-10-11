@@ -7,7 +7,7 @@ spec:
   dependsOn:
     - name: kyverno
   interval: 10m
-  path: ./flux/components/kyverno/policies
+  path: ./live/local/kyverno-policies
   prune: true
   retryInterval: 1m
   sourceRef:

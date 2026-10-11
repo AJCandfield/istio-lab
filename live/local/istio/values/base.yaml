@@ -1,0 +1,3 @@
+defaultRevision: default
+global:
+  platform: k3d

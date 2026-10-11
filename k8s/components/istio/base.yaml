@@ -23,7 +23,3 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  values:
-    defaultRevision: default
-    global:
-      platform: k3d
