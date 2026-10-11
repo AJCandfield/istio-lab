@@ -26,6 +26,13 @@ spec:
   kustomize:
     patches:
       - target:
+          kind: Namespace
+          name: flux-system
+        patch: |
+          - op: add
+            path: /metadata/labels/istio-injection
+            value: disabled
+      - target:
           kind: Deployment
         patch: |
           - op: add
