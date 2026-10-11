@@ -17,45 +17,53 @@ The public age recipient is committed in `.sops.yaml`; never commit the private 
 
 ## Bootstrap
 
-Create the local cluster and install the Flux controllers, then wait for the controllers to roll out:
+The Operator setup replaces the generated Flux installation and does not support an in-place handoff. Delete any existing local cluster and recreate it from these instructions.
+
+Create the local cluster and the mesh-excluded Flux namespace:
 
 ```sh
 k3d cluster create --config k3d.yaml
-kubectl apply --server-side --force-conflicts -k live/local/flux-system
-for deploy in $(kubectl -n flux-system get deployments -o jsonpath='{.items[*].metadata.name}'); do
-  kubectl -n flux-system rollout status "deployment/$deploy" --timeout=5m
-done
+kubectl apply -f live/local/flux-system/namespace.yaml
 ```
 
-Create the Git credential Secret, apply the Git source and root Kustomization, and trigger reconciliation:
+Install the pinned Flux Operator chart. Its values keep the operator outside the mesh and set a conservative resource envelope for the local machine:
+
+```sh
+helm upgrade --install flux-operator \
+  oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
+  --version 0.61.0 \
+  --namespace flux-system \
+  --values live/local/flux-system/operator-values.yaml \
+  --wait
+```
+
+Create the Git credential Secret, then apply the Flux instance. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
 
 ```sh
 printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system \
   --from-literal=username=git --from-file=password=/dev/stdin \
   --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -f live/local/flux-system/gotk-sync.yaml
+kubectl apply -f live/local/flux-system/flux-instance.yaml
+kubectl -n flux-system wait fluxinstance/flux --for=condition=Ready --timeout=10m
 flux reconcile kustomization flux-system --with-source
 flux check
 ```
 
-Clusters created with the previous `./flux` reconciliation path retain that bootstrap-owned setting. Migrate an existing cluster before reconciling this layout:
+The Flux instance is bootstrap-owned rather than reconciled by the root Kustomization. To validate an unmerged branch, update its sync reference and wait for the operator to regenerate the source:
 
 ```sh
-kubectl -n flux-system patch kustomization flux-system --type=merge \
-  -p '{"spec":{"path":"./live/local"}}'
+kubectl -n flux-system patch fluxinstance flux --type=merge \
+  -p '{"spec":{"sync":{"ref":"refs/heads/<branch>"}}}'
+generation=$(kubectl -n flux-system get fluxinstance flux -o jsonpath='{.metadata.generation}')
+kubectl -n flux-system wait fluxinstance/flux \
+  --for="jsonpath={.status.conditions[?(@.type=='Ready')].observedGeneration}=$generation" \
+  --timeout=10m
 flux reconcile kustomization flux-system --with-source
 ```
 
-The Git source in `live/local/flux-system/gotk-sync.yaml` defaults to `main` and is applied during bootstrap, not by the root Kustomization, so pointing the live source at an unmerged branch for validation is not reverted by reconciliation:
+Use `refs/heads/main` with the same commands to switch the cluster back after the branch merges, before deleting the branch.
 
-```sh
-kubectl -n flux-system patch gitrepository flux-system --type=merge -p '{"spec":{"ref":{"branch":"<branch>"}}}'
-flux reconcile kustomization flux-system --with-source
-```
-
-Use the same commands with `main` to switch the cluster back after the branch merges, before deleting the branch.
-
-Inspect reconciliation with `flux get all --all-namespaces`.
+Inspect reconciliation with `flux get all --all-namespaces` and inspect the operator-managed installation with `kubectl -n flux-system get fluxinstance,fluxreport`.
 
 Teardown the cluster with `k3d cluster delete istio-lab`.
 
