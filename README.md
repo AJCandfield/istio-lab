@@ -7,7 +7,7 @@ mise install
 pre-commit install
 ```
 
-The repository uses Flux to reconcile the lab components. Flux installs Istio and Kyverno from pinned Helm charts and applies the lab services from Kubernetes manifests. The debug container remains an imperative local tool.
+The repository uses Flux to reconcile the lab components. Flux installs Istio and Kyverno from pinned Helm charts and applies the lab services to the `main` namespace from Kubernetes manifests. The debug container remains an imperative local tool.
 
 ## Git credentials
 
@@ -23,7 +23,7 @@ Create the local cluster and the mesh-excluded Flux namespace:
 
 ```sh
 k3d cluster create --config k3d.yaml
-kubectl apply -f live/local/flux-system/namespace.yaml
+kubectl apply -f live/local/bootstrap/flux-system/namespace.yaml
 ```
 
 Install the pinned Flux Operator chart. Its values keep the operator outside the mesh and set a conservative resource envelope for the local machine:
@@ -33,17 +33,16 @@ helm upgrade --install flux-operator \
   oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
   --version 0.61.0 \
   --namespace flux-system \
-  --values live/local/flux-system/operator-values.yaml \
+  --values live/local/bootstrap/flux-system/operator-values.yaml \
   --wait
 ```
 
-Create the Git credential Secret, then apply the Flux instance. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
+Decrypt and apply the Git credential Secret, then apply the Flux instance. The encrypted Secret is safe to store in the public repository; its age identity remains local. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
 
 ```sh
-printf %s "$FLUX_GITHUB_TOKEN" | kubectl -n flux-system create secret generic flux-system \
-  --from-literal=username=git --from-file=password=/dev/stdin \
-  --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -f live/local/flux-system/flux-instance.yaml
+SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
+  sops decrypt live/local/bootstrap/flux-system/git-credentials.sops.yaml | kubectl apply -f -
+kubectl apply -f live/local/bootstrap/flux-system/flux-instance.yaml
 kubectl -n flux-system wait fluxinstance/flux --for=condition=Ready --timeout=10m
 flux reconcile kustomization flux-system --with-source
 flux check

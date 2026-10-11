@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: debug-curl
-  namespace: istio-lab
+  namespace: main
 spec:
   replicas: 1
   selector:

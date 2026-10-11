@@ -1,0 +1,23 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: sources
+  namespace: flux-system
+spec:
+  healthChecks:
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: HelmRepository
+      name: istio
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: HelmRepository
+      name: kyverno
+      namespace: flux-system
+  interval: 10m
+  path: ./live/local/namespaces/flux-system
+  prune: true
+  retryInterval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m

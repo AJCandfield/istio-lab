@@ -56,7 +56,7 @@
         "flux"
       ],
       "matchFileNames": [
-        "k8s/components/istio/*.yaml"
+        "k8s/components/infra/istio/**/*.yaml"
       ],
       "groupName": "Istio Helm charts",
       "groupSlug": "istio-helm-charts"

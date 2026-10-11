@@ -1,6 +1,0 @@
-global:
-  platform: k3d
-pilot:
-  resources:
-    requests:
-      memory: 512Mi

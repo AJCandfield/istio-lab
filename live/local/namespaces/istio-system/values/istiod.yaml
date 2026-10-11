@@ -1,0 +1,8 @@
+global:
+  platform: k3d
+pilot:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  resources:
+    requests:
+      memory: 512Mi

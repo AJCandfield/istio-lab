@@ -7,7 +7,7 @@ spec:
   dependsOn:
     - name: kyverno
   interval: 10m
-  path: ./live/local/kyverno-policies
+  path: ./live/local/cluster/kyverno-policies
   prune: true
   retryInterval: 1m
   sourceRef:
