@@ -1,4 +1,2 @@
 global:
   platform: k3d
-podAnnotations:
-  sidecar.istio.io/inject: "false"
