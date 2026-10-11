@@ -10,6 +10,7 @@ permissions:
   contents: read
 
 env:
+  # Disable project environment loading because CI does not have the SOPS age identity.
   MISE_NO_ENV: "1"
 
 jobs:
