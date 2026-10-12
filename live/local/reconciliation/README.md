@@ -1,3 +1,5 @@
 # Flux reconciliation
 
-This directory defines the Flux Kustomizations that reconcile the local environment. These resources connect the `live/local` root to the namespace and cluster overlays and encode dependency and health-check ordering for infrastructure, policies, and applications.
+This directory is the orchestration layer included by the [local root Kustomization](../kustomization.yaml). Its Flux Kustomizations point to the [namespace overlays](../namespaces/) and [global overlays](../_global/) that compose reusable components into deployable resources.
+
+The definitions encode dependency and health-check ordering: [chart sources](sources.yaml) precede the [Istio control plane](istio-control-plane.yaml), [Istio ingress](istio-ingress.yaml), and [applications](main.yaml), while [Kyverno](kyverno.yaml) precedes the [cluster policies](kyverno-policies.yaml).
