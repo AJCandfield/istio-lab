@@ -1,0 +1,17 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kyverno
+  namespace: flux
+spec:
+  dependsOn:
+    - name: sources
+  interval: 10m
+  path: ./live/local/namespaces/kyverno
+  prune: true
+  retryInterval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux
+  timeout: 10m
+  wait: true

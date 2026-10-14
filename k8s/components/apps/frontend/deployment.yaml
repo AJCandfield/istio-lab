@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: v1
+    spec:
+      containers:
+        - args:
+            - -listen=:8080
+            - -text=Hello from FRONTEND v1
+          image: hashicorp/http-echo:1.0
+          name: frontend
+          ports:
+            - containerPort: 8080
