@@ -13,7 +13,7 @@ From the repository root, use Helmfile to create the `flux` namespace and instal
 helmfile --file live/local/_bootstrap/helmfile.yaml sync
 ```
 
-Decrypt and apply the Git credential Secret, then apply the Flux instance. Its password field is encrypted and safe to store in the public repository; the age identity remains local. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
+Decrypt and apply the Git credential Secret, then apply the Flux instance. The age identity remains local. The operator installs Flux and creates the `flux-system` Git source and root Kustomization:
 
 ```bash
 # Decrypt and apply the Git credential Secret.
@@ -41,18 +41,6 @@ flux reconcile kustomization flux-system --namespace flux --with-source
 flux check
 ```
 
-The Flux instance is bootstrap-owned rather than reconciled by the root Kustomization. To validate an unmerged branch, update its sync reference and wait for the operator to regenerate the source:
-
-```sh
-kubectl -n flux patch fluxinstance flux --type=merge \
-  -p '{"spec":{"sync":{"ref":"refs/heads/<branch>"}}}'
-generation=$(kubectl -n flux get fluxinstance flux -o jsonpath='{.metadata.generation}')
-kubectl -n flux wait fluxinstance/flux \
-  --for="jsonpath={.status.conditions[?(@.type=='Ready')].observedGeneration}=$generation" \
-  --timeout=10m
-flux reconcile kustomization flux-system --namespace flux --with-source
-```
-
-Use `refs/heads/main` with the same commands to switch the cluster back after the branch merges, before deleting the branch.
+The Flux instance is bootstrap-owned rather than reconciled by the root Kustomization.
 
 Inspect reconciliation with `flux get all --all-namespaces` and inspect the operator-managed installation with `kubectl -n flux get fluxinstance,fluxreport`.
