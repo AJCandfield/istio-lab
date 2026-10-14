@@ -16,9 +16,8 @@ helmfile --file live/local/_bootstrap/helmfile.yaml sync
 Decrypt and apply the Git credential Secret, then apply the Flux instance. The age identity remains local. The operator installs Flux and creates the `flux-system` Git source and root Kustomization:
 
 ```bash
-# Decrypt and apply the Git credential Secret.
-SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
-  sops decrypt live/local/_bootstrap/flux/git-credentials.sops.yaml | kubectl apply -f -
+# SOPS_AGE_KEY_FILE is needed to retrieve the private key.
+sops decrypt live/local/_bootstrap/flux/git-credentials.sops.yaml | kubectl apply -f -
 ```
 
 ```bash
