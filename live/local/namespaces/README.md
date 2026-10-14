@@ -1,6 +1,6 @@
 # Namespace overlays
 
-This directory contains the namespace-scoped overlays for the local environment. Each child directory combines reusable [`k8s/components`](../../../k8s/components/) resources with local namespace definitions and, where needed, k3d-specific Helm values.
+This directory contains the namespace-scoped resources and overlays for the local environment. Overlays combine reusable [`k8s/components`](../../../k8s/components/) resources with local namespace definitions and, where needed, k3d-specific Helm values.
 
 The overlays are organized by namespace:
 
