@@ -17,6 +17,7 @@ spec:
     type: kubernetes
     size: small
     networkPolicy: true
+  # Creates the root Flux Kustomization, which renders ./live/local/kustomization.yaml.
   sync:
     kind: GitRepository
     url: https://github.com/AJCandfield/istio-lab.git
