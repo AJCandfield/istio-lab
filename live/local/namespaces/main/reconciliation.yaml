@@ -6,19 +6,6 @@ metadata:
 spec:
   dependsOn:
     - name: istio-ingress
-  healthChecks:
-    - apiVersion: apps/v1
-      kind: Deployment
-      name: frontend
-      namespace: main
-    - apiVersion: apps/v1
-      kind: Deployment
-      name: orders
-      namespace: main
-    - apiVersion: apps/v1
-      kind: Deployment
-      name: payments
-      namespace: main
   interval: 10m
   path: ./live/local/namespaces/main
   prune: true
@@ -27,3 +14,4 @@ spec:
     kind: GitRepository
     name: flux-system
   timeout: 5m
+  wait: true

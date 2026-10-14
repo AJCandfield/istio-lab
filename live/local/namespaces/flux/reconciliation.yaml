@@ -4,15 +4,6 @@ metadata:
   name: sources
   namespace: flux
 spec:
-  healthChecks:
-    - apiVersion: source.toolkit.fluxcd.io/v1
-      kind: HelmRepository
-      name: istio
-      namespace: flux
-    - apiVersion: source.toolkit.fluxcd.io/v1
-      kind: HelmRepository
-      name: kyverno
-      namespace: flux
   interval: 10m
   path: ./live/local/namespaces/flux
   prune: true
@@ -21,3 +12,4 @@ spec:
     kind: GitRepository
     name: flux-system
   timeout: 5m
+  wait: true

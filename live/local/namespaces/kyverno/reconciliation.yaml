@@ -6,11 +6,6 @@ metadata:
 spec:
   dependsOn:
     - name: sources
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2
-      kind: HelmRelease
-      name: kyverno
-      namespace: kyverno
   interval: 10m
   path: ./live/local/namespaces/kyverno
   prune: true
@@ -19,3 +14,4 @@ spec:
     kind: GitRepository
     name: flux-system
   timeout: 10m
+  wait: true
