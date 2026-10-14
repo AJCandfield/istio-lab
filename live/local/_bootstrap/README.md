@@ -23,7 +23,7 @@ SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
 
 ```bash
 # Apply the Flux instance.
-kubectl apply -f live/local/_bootstrap/flux/flux-instance.yaml
+kubectl apply -f live/local/_bootstrap/flux/instance.yaml
 ```
 
 ```bash
