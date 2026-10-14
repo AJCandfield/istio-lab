@@ -1,5 +1,9 @@
 # Repository instructions
 
+## Local cluster
+
+- The `local` cluster has no availability requirements; breaking changes may be applied immediately without preserving uptime.
+
 ## Infrastructure and service mesh
 
 - Keep infrastructure and cluster-lifecycle components such as Kyverno and Karpenter outside the service mesh by default.
