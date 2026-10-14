@@ -13,9 +13,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespaces/flux/reconciliation.yaml
-  - namespaces/istio-system/reconciliation.yaml
-  - namespaces/istio-ingress/reconciliation.yaml
-  - namespaces/kyverno/reconciliation.yaml
-  - _global/kyverno-policies/reconciliation.yaml
-  - namespaces/main/reconciliation.yaml
+  - namespaces/flux/reconciliation/sources.yaml
+  - namespaces/flux/reconciliation/istio-control-plane.yaml
+  - namespaces/flux/reconciliation/istio-ingress.yaml
+  - namespaces/flux/reconciliation/kyverno.yaml
+  - namespaces/flux/reconciliation/kyverno-policies.yaml
+  - namespaces/flux/reconciliation/main.yaml
