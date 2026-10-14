@@ -15,12 +15,29 @@ helmfile --file live/local/_bootstrap/helmfile.yaml sync
 
 Decrypt and apply the Git credential Secret, then apply the Flux instance. Its password field is encrypted and safe to store in the public repository; the age identity remains local. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
 
-```sh
+```bash
+# Decrypt and apply the Git credential Secret.
 SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
   sops decrypt live/local/_bootstrap/flux/git-credentials.sops.yaml | kubectl apply -f -
+```
+
+```bash
+# Apply the Flux instance.
 kubectl apply -f live/local/_bootstrap/flux/flux-instance.yaml
+```
+
+```bash
+# Wait for the Flux instance to become ready.
 kubectl -n flux wait fluxinstance/flux --for=condition=Ready --timeout=10m
+```
+
+```bash
+# Reconcile the root Kustomization and its Git source.
 flux reconcile kustomization flux-system --namespace flux --with-source
+```
+
+```bash
+# Verify that Flux is installed and healthy.
 flux check
 ```
 
