@@ -2,7 +2,7 @@ apiVersion: fluxcd.controlplane.io/v1
 kind: FluxInstance
 metadata:
   name: flux
-  namespace: flux-system
+  namespace: flux
 spec:
   distribution:
     version: 2.9.6
@@ -27,7 +27,7 @@ spec:
     patches:
       - target:
           kind: Namespace
-          name: flux-system
+          name: flux
         patch: |
           - op: add
             path: /metadata/labels/istio-injection

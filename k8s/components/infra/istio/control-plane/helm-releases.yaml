@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: istio
-        namespace: flux-system
+        namespace: flux
       version: "1.31.1"
   driftDetection:
     mode: warn
@@ -35,7 +35,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: istio
-        namespace: flux-system
+        namespace: flux
       version: "1.31.1"
   dependsOn:
     - name: istio-base

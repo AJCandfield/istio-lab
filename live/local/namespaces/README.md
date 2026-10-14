@@ -4,7 +4,7 @@ This directory contains the namespace-scoped overlays for the local environment.
 
 The overlays are organized by namespace:
 
-- [`flux-system`](flux-system/) contains the Istio and Kyverno Helm repository sources used by Flux.
+- [`flux`](flux/) contains the Istio and Kyverno Helm repository sources used by Flux.
 - [`istio-system`](istio-system/) contains the Istio base and control-plane releases with their local Helm values.
 - [`istio-ingress`](istio-ingress/) contains the Istio ingress gateway release with its local Helm values.
 - [`kyverno`](kyverno/) contains the Kyverno controller release.

@@ -2,7 +2,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: istio-ingress
-  namespace: flux-system
+  namespace: flux
 spec:
   dependsOn:
     - name: istio-control-plane
