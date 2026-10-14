@@ -1,3 +1,11 @@
+# Root Kustomize entry point for the local cluster. The FluxInstance-managed
+# flux-system Kustomization builds this directory and applies the child Flux
+# Kustomizations listed below. Their spec.dependsOn fields form the reconciliation
+# DAG; the order of this resources list does not control execution.
+#
+# Operator commands:
+#   flux get kustomizations --all-namespaces
+#   flux reconcile kustomization flux-system --namespace flux --with-source
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
