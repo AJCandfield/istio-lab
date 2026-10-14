@@ -12,5 +12,5 @@ spec:
   retryInterval: 1m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: flux
   timeout: 5m

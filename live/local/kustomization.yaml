@@ -1,7 +1,7 @@
 # This file is the Kustomize entry point for the local cluster.
 #
 # During bootstrap, the Flux Operator creates a root Flux Kustomization named
-# flux-system. It watches the live/local directory in the Git repository and
+# flux. It watches the live/local directory in the Git repository and
 # uses this file to apply the child Flux Kustomizations listed below. Each child
 # reconciles one part of the cluster, while its spec.dependsOn field defines the
 # reconciliation DAG. The order of the resources below does not control when
@@ -9,7 +9,7 @@
 #
 # Useful operator commands:
 #   flux get kustomizations --all-namespaces
-#   flux reconcile kustomization flux-system --namespace flux --with-source
+#   flux reconcile kustomization flux --namespace flux --with-source
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
