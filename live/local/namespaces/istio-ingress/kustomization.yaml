@@ -4,6 +4,8 @@ namespace: istio-ingress
 resources:
   - namespace.yaml
   - ../../../../k8s/components/infra/istio/ingress
+  - gateway.yaml
+  - routes/flux.yaml
 configMapGenerator:
   - name: istio-ingress-values
     files:
