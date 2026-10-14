@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: dex-config
+    namespace: dex
+stringData:
+    config.yaml: ENC[AES256_GCM,data:LsJX+pvJsXP21YD6Scs5r1MuswGPh2KdOfKj+TT9jKgkXg+BjyzQsWvwRwS4/98AN47rg+K7gC6YxiDAKf+C535pe6ymY1Z21fBMXwLP/9Dz5bQNqT4n8BxOzGE6Nges53zQzrsxX1JFZH+iwasfLuVUByfLl1KapDj0XCOrxdR0I3giry66g5EjQ645rAyQqmlJN/urNUFvML8J3CybGY+QBHWqQTgo5sAUOSRov2nnrGTs2sV+82/tbUIxvAzDFmgWPjt4cU0SKIMAdENxq8dZzujIhd2PimOwPzNdrJg4riquCEkI68Qq1mi+/QWwb9gmljf8yp9oyZTL4wYMkv4rrNiU7Zh8Ccxy+jxDvwgGTrUW3TSXASrichCYMbsP5/FEjFXs6DitfnDDUtcVEQ3C0aDFtM2155BhzGd2zX/ZxjDbLQQxjmnFaUbcoPo8oEbYU7Rz/FvnhlSAtlyDTvnKjyrmAkKHQCvrVEaq1eY=,iv:H3U1+uA2vM6EOGfgaVMs1JVOQjOCU2GnCSkgDGBh18M=,tag:bBuyq0jEhBMYQoQWQ6VGxg==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3WlArbXF6Y09XYllLTjRj
+            aGVjcXk4N09KbnBYMEhRVXh0YTJ0Vm1MSWlFCjNOSjRqaTFqUmxZeXN4Yzk4WFJW
+            S0txRHRIamJlTVlCczFzZk8weXhNWDgKLS0tIHRQY2Q5bzcxTWF3WEtuV2dLeXgr
+            Wkg1MkpDTVBrQkttR2NpaEw1UkEzalkKMkVfXEkKh17jUQfrnt+p8axkLKgpn9JE
+            OrmcANVcqtW2TP5G7gBOpVPc8bhPtZiLB9BBR/eeutQ11e/8Szd5/A==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age13xvjrqrtj7pmr6xu5stwcyrhgvtwskarvj00eadxag7surslmf7qw23hkl
+    encrypted_regex: ^(config\.yaml|password)$
+    lastmodified: "2026-10-14T11:12:23Z"
+    mac: ENC[AES256_GCM,data:Ysg3Dn7ZUxW9c7AwLTsdqwAKrTcOuu5q1GpMFoo6nVxvvUmVOZCrpCnx4QvPWKzwg0G815a+7TmA7xE6aSLbJTktWketshBAHxLYi7caIIW8uvZS1fqXnEmKkz3kmpoLcC36ihJg6kWH2eK/pdGDJn//BNnOOMSBq9VY1EQUG8w=,iv:kGyV3P8VB55rwxC0hixB/+Rt7g2GaYysiMzgzqL++vs=,tag:2+X11l6iqGDCyAG77MbaNw==,type:str]
+    version: 3.13.3

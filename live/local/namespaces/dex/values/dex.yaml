@@ -1,0 +1,46 @@
+configSecret:
+  create: false
+  name: dex-config
+nodeSelector:
+  storage.istio-lab/dex: "true"
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+podSecurityContext:
+  fsGroup: 1001
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+rbac:
+  create: false
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+service:
+  ports:
+    http:
+      port: 8080
+serviceAccount:
+  create: false
+  name: dex
+strategy:
+  type: Recreate
+volumeMounts:
+  - mountPath: /var/dex
+    name: data
+volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: dex

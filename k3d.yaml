@@ -10,6 +10,11 @@ servers: 1
 agents: 1
 image: rancher/k3s:v1.36.5-k3s1
 
+volumes:
+  - volume: istio-lab-dex:/var/lib/istio-lab/dex
+    nodeFilters:
+      - agent:0
+
 kubeAPI:
   host: localhost
   hostIP: 127.0.0.1
@@ -22,6 +27,13 @@ ports:
   - port: "127.0.0.1:8443:443"
     nodeFilters:
       - loadbalancer
+
+files:
+  - description: CoreDNS override for the local Dex issuer
+    source: k3d/coredns-custom.yaml
+    destination: /var/lib/rancher/k3s/server/manifests/coredns-custom.yaml
+    nodeFilters:
+      - server:0
 
 options:
   k3d:
@@ -39,6 +51,10 @@ options:
       - arg: --cluster-cidr=10.10.0.0/16
         nodeFilters:
           - server:*
+    nodeLabels:
+      - label: storage.istio-lab/dex=true
+        nodeFilters:
+          - agent:0
   kubeconfig:
     updateDefaultKubeconfig: true
     switchCurrentContext: false

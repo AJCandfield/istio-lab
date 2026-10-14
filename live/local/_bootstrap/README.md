@@ -7,13 +7,28 @@ Bootstrap resources are intentionally excluded from the [local root Kustomizatio
 
 ## Bootstrap
 
-From the repository root, use Helmfile to create the `flux` namespace and install the pinned Flux Operator chart. Its values keep the operator outside the mesh and set a conservative resource envelope for the local machine:
+The k3d configuration attaches the Docker volume `istio-lab-dex` to the agent node for the Dex SQLite database. The volume survives cluster deletion and must be removed explicitly with Docker when its identity data is no longer needed. Recreate clusters made with an older `k3d.yaml` so the volume, storage node label, and local DNS override are present.
+
+From the repository root, create the bootstrap namespaces, then decrypt and apply the Dex and Flux Web UI configuration Secrets. These Secrets share an OIDC client credential and remain bootstrap-owned so the age identity stays local. The Dex configuration enables its local password database and loopback-only gRPC API, but does not create any users.
+
+```bash
+kubectl create namespace flux --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f live/local/namespaces/dex/namespace.yaml
+
+SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
+  sops decrypt live/local/_bootstrap/dex/config.sops.yaml | kubectl apply -f -
+
+SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
+  sops decrypt live/local/_bootstrap/flux/web-config.sops.yaml | kubectl apply -f -
+```
+
+Use Helmfile to install the pinned Flux Operator chart. Its values keep the operator outside the mesh, configure the Web UI to use Dex, and set a conservative resource envelope for the local machine:
 
 ```sh
 helmfile --file live/local/_bootstrap/helmfile.yaml sync
 ```
 
-Decrypt and apply the Git credential Secret, then apply the Flux instance. The age identity remains local. The operator installs Flux and creates the `flux-system` Git source and root Kustomization:
+Decrypt and apply the Git credential Secret, then apply the Flux instance. The operator installs Flux and creates the `flux-system` Git source and root Kustomization:
 
 ```bash
 # Decrypt and apply the Git credential Secret.

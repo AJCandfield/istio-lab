@@ -1,0 +1,71 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dex
+resources:
+  - namespace.yaml
+  - ../../../../k8s/components/infra/dex
+  - persistence.yaml
+  - network-policy.yaml
+  - service-account.yaml
+configMapGenerator:
+  - name: dex-values
+    files:
+      - values.yaml=values/dex.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+patches:
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: dex
+    patch: |-
+      - op: add
+        path: /spec/valuesFrom
+        value:
+          - kind: ConfigMap
+            name: dex-values
+            valuesKey: values.yaml
+      - op: add
+        path: /spec/postRenderers
+        value:
+          - kustomize:
+              patches:
+                - target:
+                    kind: Deployment
+                    name: dex
+                  patch: |-
+                    - op: add
+                      path: /spec/template/spec/initContainers
+                      value:
+                        - name: initialize-data
+                          image: busybox:1.37.0
+                          imagePullPolicy: IfNotPresent
+                          command:
+                            - /bin/sh
+                            - -c
+                          args:
+                            - chown 1001:1001 /var/dex && chmod 0700 /var/dex
+                          resources:
+                            requests:
+                              cpu: 1m
+                              memory: 4Mi
+                            limits:
+                              cpu: 20m
+                              memory: 16Mi
+                          securityContext:
+                            allowPrivilegeEscalation: false
+                            capabilities:
+                              drop:
+                                - ALL
+                              add:
+                                - CHOWN
+                            readOnlyRootFilesystem: true
+                            runAsGroup: 1001
+                            runAsNonRoot: true
+                            runAsUser: 1001
+                          volumeMounts:
+                            - mountPath: /var/dex
+                              name: data
