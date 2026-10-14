@@ -10,6 +10,7 @@
   "enabledManagers": [
     "flux",
     "github-actions",
+    "helmfile",
     "kubernetes",
     "mise",
     "pre-commit"

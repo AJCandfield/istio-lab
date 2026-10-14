@@ -7,27 +7,13 @@ Bootstrap resources are intentionally excluded from the [local root Kustomizatio
 
 ## Bootstrap
 
-The Operator setup replaces the generated Flux installation and does not support an in-place handoff. Delete any existing local cluster and recreate it from these instructions.
-
-From the repository root, create the local cluster and the mesh-excluded Flux namespace:
+From the repository root, use Helmfile to create the `flux-system` namespace and install the pinned Flux Operator chart. Its values keep the operator outside the mesh and set a conservative resource envelope for the local machine:
 
 ```sh
-k3d cluster create --config k3d.yaml
-kubectl apply -f live/local/_bootstrap/flux-system/namespace.yaml
+helmfile --file live/local/_bootstrap/helmfile.yaml sync
 ```
 
-Install the pinned Flux Operator chart. Its values keep the operator outside the mesh and set a conservative resource envelope for the local machine:
-
-```sh
-helm upgrade --install flux-operator \
-  oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
-  --version 0.61.0 \
-  --namespace flux-system \
-  --values live/local/_bootstrap/flux-system/operator-values.yaml \
-  --wait
-```
-
-Decrypt and apply the Git credential Secret, then apply the Flux instance. The encrypted Secret is safe to store in the public repository; its age identity remains local. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
+Decrypt and apply the Git credential Secret, then apply the Flux instance. Its password field is encrypted and safe to store in the public repository; the age identity remains local. The operator installs Flux 2.9.6 and creates the `flux-system` Git source and root Kustomization:
 
 ```sh
 SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
@@ -53,5 +39,3 @@ flux reconcile kustomization flux-system --with-source
 Use `refs/heads/main` with the same commands to switch the cluster back after the branch merges, before deleting the branch.
 
 Inspect reconciliation with `flux get all --all-namespaces` and inspect the operator-managed installation with `kubectl -n flux-system get fluxinstance,fluxreport`.
-
-Teardown the cluster with `k3d cluster delete istio-lab`.

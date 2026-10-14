@@ -9,7 +9,7 @@ pre-commit install
 
 The repository uses Flux to reconcile the lab components. Flux installs Istio and Kyverno from pinned Helm charts and applies the lab services to the `main` namespace from Kubernetes manifests. Infrastructure workloads remain outside the mesh. The ingress gateway uses Istio's gateway injection template to configure its primary proxy container; it does not receive an additional sidecar. The debug container remains an imperative local tool.
 
-See the [bootstrap instructions](live/local/_bootstrap/README.md#bootstrap) to create the local cluster and install Flux.
+See the [bootstrap instructions](live/local/_bootstrap/README.md#bootstrap) to install Flux on the local cluster.
 
 ## Git credentials
 
