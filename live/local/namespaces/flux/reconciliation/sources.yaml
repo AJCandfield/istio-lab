@@ -5,7 +5,7 @@ metadata:
   namespace: flux
 spec:
   interval: 10m
-  path: ./live/local/namespaces/flux
+  path: ./k8s/components/infra/source
   prune: true
   retryInterval: 1m
   sourceRef:
