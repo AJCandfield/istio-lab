@@ -1,0 +1,12 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux
+spec:
+  sync:
+    kind: GitRepository
+    url: https://github.com/AJCandfield/istio-lab.git
+    ref: refs/heads/main
+    path: ./live/local
+    pullSecret: flux-system

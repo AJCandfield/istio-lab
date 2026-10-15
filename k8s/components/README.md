@@ -10,6 +10,10 @@ The [application components](apps/) contain each application's Deployment and Se
 
 The [infrastructure components](infra/) separate chart sources, controllers or control planes, ingress, and policies so environments can compose only the resources they need. [Namespace overlays](../../live/local/namespaces/) add namespaces and Helm values, while [global overlays](../../live/local/_global/) select cluster-scoped resources. [Flux reconciliation resources](../../live/local/namespaces/flux/reconciliation/) apply those overlays in dependency order. Infrastructure workloads remain outside the service mesh by default.
 
+### Bootstrap components
+
+The [`flux-instance`](infra/flux-instance/) and [`flux-operator`](infra/flux-operator/) directories contain the reusable parts of the Flux bootstrap. Cluster bootstrap overlays compose them with environment-specific sync settings and operator values. These components are applied manually and are deliberately excluded from [`infra/kustomization.yaml`](infra/kustomization.yaml) because Flux cannot reconcile its own initial installation.
+
 ### Helm sources and releases
 
 A `HelmRepository` and the `HelmRelease` that uses it are related, but they belong to different reconciliation boundaries:

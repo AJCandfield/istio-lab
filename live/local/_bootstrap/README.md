@@ -1,7 +1,7 @@
 # Bootstrap resources
 
-This directory contains the resources needed to install Flux on the cluster.
-These resources must exist before GitOps can reconcile the rest of the environment.
+This directory contains the local cluster overlay needed to install Flux.
+It composes the reusable [Flux instance](../../../k8s/components/infra/flux-instance/) and [Flux Operator values](../../../k8s/components/infra/flux-operator/) with local configuration that must exist before GitOps can reconcile the rest of the environment.
 
 Bootstrap resources are intentionally excluded from the [local root Kustomization](../kustomization.yaml) because Flux cannot own its own initial setup.
 
@@ -23,7 +23,7 @@ SOPS_AGE_KEY_FILE="$HOME/.config/mise/istio-lab-age.txt" \
   sops decrypt live/local/_bootstrap/flux/web-config.sops.yaml | kubectl apply -f -
 ```
 
-Use Helmfile to install the pinned Flux Operator chart. Its values keep the operator outside the mesh, configure the Web UI to use Dex, and set a conservative resource envelope for the local machine:
+Use Helmfile to install the pinned Flux Operator chart. Shared values keep the operator outside the mesh and set a conservative resource envelope, while the local values configure the Web UI to use Dex:
 
 ```sh
 helmfile --file live/local/_bootstrap/helmfile.yaml sync
@@ -37,8 +37,8 @@ sops decrypt live/local/_bootstrap/flux/git-credentials.sops.yaml | kubectl appl
 ```
 
 ```bash
-# Apply the Flux instance.
-kubectl apply -f live/local/_bootstrap/flux/instance.yaml
+# Render the reusable Flux instance with the local sync configuration and apply it.
+kubectl apply -k live/local/_bootstrap/flux
 ```
 
 ```bash

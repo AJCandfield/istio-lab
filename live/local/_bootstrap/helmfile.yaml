@@ -10,4 +10,5 @@ releases:
     chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
     version: 0.61.0
     values:
+      - ../../../k8s/components/infra/flux-operator/values.yaml
       - flux/values.yaml
