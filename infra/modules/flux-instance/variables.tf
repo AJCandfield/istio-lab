@@ -14,8 +14,13 @@ variable "flux_version" {
 }
 
 variable "git_url" {
-  description = "Git repository reconciled by Flux."
+  description = "GitHub repository reconciled by Flux."
   type        = string
+
+  validation {
+    condition     = startswith(var.git_url, "https://github.com/")
+    error_message = "git_url must use HTTPS on github.com because Flux attaches the Git credential Secret."
+  }
 }
 
 variable "git_ref" {

@@ -43,7 +43,7 @@ sops infra/live/local/secrets/flux-web-config.sops.yaml
 
 ## Lifecycle
 
-Run `just --list` for the authoritative lifecycle tasks. Platform destruction leaves the k3d cluster intact, while cluster deletion retains the `istio-lab-dex` Docker volume. The storage deletion task removes that retained identity data explicitly.
+Run `mise exec -- just --list` for the authoritative lifecycle tasks. Platform destruction leaves the k3d cluster intact, while cluster deletion retains the `istio-lab-dex` Docker volume. The storage deletion task removes that retained identity data explicitly.
 
 ## Local Dex user
 

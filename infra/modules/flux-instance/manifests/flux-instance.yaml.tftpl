@@ -1,0 +1,78 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux
+spec:
+  distribution:
+    version: ${jsonencode(flux_version)}
+    registry: ghcr.io/fluxcd
+    artifact: oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests
+  components:
+    - source-controller
+    - kustomize-controller
+    - helm-controller
+    - notification-controller
+  cluster:
+    type: kubernetes
+    size: small
+    networkPolicy: true
+  sync:
+    kind: GitRepository
+    url: ${jsonencode(git_url)}
+    ref: ${jsonencode(git_ref)}
+    path: ./live/local
+    pullSecret: flux-system
+  kustomize:
+    patches:
+      - target:
+          kind: Namespace
+          name: flux
+        patch: |
+          - op: add
+            path: /metadata/labels/istio-injection
+            value: disabled
+      - target:
+          kind: Deployment
+        patch: |
+          - op: add
+            path: /spec/template/metadata/annotations/sidecar.istio.io~1inject
+            value: "false"
+      - target:
+          kind: Deployment
+        patch: |
+          - op: replace
+            path: /spec/template/spec/containers/0/resources
+            value:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+      - target:
+          kind: Deployment
+          name: source-controller
+        patch: |
+          - op: replace
+            path: /spec/template/spec/containers/0/resources
+            value:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
+      - target:
+          kind: Deployment
+          name: (kustomize-controller|helm-controller)
+        patch: |
+          - op: replace
+            path: /spec/template/spec/containers/0/resources
+            value:
+              requests:
+                cpu: 100m
+                memory: 64Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi

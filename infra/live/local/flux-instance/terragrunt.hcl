@@ -7,7 +7,7 @@ include "root" {
 }
 
 dependencies {
-  paths = ["../platform-config"]
+  paths = ["../flux-operator", "../platform-config"]
 }
 
 locals {

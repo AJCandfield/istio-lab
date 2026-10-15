@@ -6,10 +6,6 @@ include "root" {
   path = find_in_parent_folders("root.hcl")
 }
 
-dependencies {
-  paths = ["../flux-operator"]
-}
-
 locals {
   cluster_vars = read_terragrunt_config(find_in_parent_folders("cluster.hcl"))
   secret_path  = "${get_repo_root()}/infra/live/local/secrets/dex-config.sops.yaml"

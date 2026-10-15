@@ -182,8 +182,15 @@ resource "helm_release" "dex" {
 
   cleanup_on_fail = true
   timeout         = 300
-  values          = [file("${path.module}/values/dex.yaml")]
-  wait            = true
+  values = [
+    file("${path.module}/values/dex.yaml"),
+    yamlencode({
+      podAnnotations = {
+        "secrets.istio-lab/dex-revision" = tostring(var.dex_secret_revision)
+      }
+    }),
+  ]
+  wait = true
 
   depends_on = [
     kubernetes_job_v1.dex_initialize_data,

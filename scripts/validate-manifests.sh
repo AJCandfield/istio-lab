@@ -17,7 +17,7 @@ while IFS= read -r -d '' secret; do
   if ! awk '
     /^(data|stringData):$/ { payload = 1; next }
     /^[^ ]/ { payload = 0 }
-    payload && /^    [[:alnum:]_.-]+:/ && $0 !~ /: ENC\[/ { invalid = 1 }
+    payload && /^[[:space:]]+[[:alnum:]_.-]+:/ && $0 !~ /: ENC\[/ { invalid = 1 }
     END { exit invalid }
   ' "$secret"; then
     printf 'unencrypted Secret payload in %s\n' "$secret" >&2
