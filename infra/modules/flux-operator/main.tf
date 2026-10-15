@@ -6,6 +6,13 @@ resource "kubernetes_namespace_v1" "flux" {
       "istio-injection" = "disabled"
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations,
+      metadata[0].labels,
+    ]
+  }
 }
 
 resource "kubernetes_secret_v1" "web_config" {

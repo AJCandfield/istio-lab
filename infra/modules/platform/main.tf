@@ -32,6 +32,10 @@ resource "kubernetes_secret_v1" "dex_config" {
 resource "kubernetes_manifest" "resources" {
   for_each = local.resource_manifests
   manifest = each.value
+  computed_fields = concat(
+    ["metadata.annotations", "metadata.labels"],
+    each.key == "dex-persistent-volume" ? ["spec.storageClassName"] : [],
+  )
 
   depends_on = [kubernetes_manifest.namespaces]
 }
