@@ -7,6 +7,7 @@ resources:
   - persistence.yaml
   - network-policy.yaml
   - service-account.yaml
+  - test-user-rbac.yaml
 configMapGenerator:
   - name: dex-values
     files:

@@ -9,7 +9,7 @@ Bootstrap resources are intentionally excluded from the [local root Kustomizatio
 
 The k3d configuration attaches the Docker volume `istio-lab-dex` to the agent node for the Dex SQLite database. The volume survives cluster deletion and must be removed explicitly with Docker when its identity data is no longer needed. Recreate clusters made with an older `k3d.yaml` so the volume and storage node label are present.
 
-From the repository root, apply the local Dex issuer DNS override and create the bootstrap namespaces, then decrypt and apply the Dex and Flux Web UI configuration Secrets. These Secrets share an OIDC client credential and remain bootstrap-owned so the age identity stays local. The Dex configuration enables its local password database and loopback-only gRPC API, but does not create any users.
+From the repository root, apply the local Dex issuer DNS override and create the bootstrap namespaces, then decrypt and apply the Dex and Flux Web UI configuration Secrets. These Secrets share an OIDC client credential and remain bootstrap-owned so the age identity stays local. The Dex configuration includes a generated local test user; its credentials and user-management workflow are documented in the [Dex component](../../../k8s/components/infra/dex/README.md).
 
 ```bash
 kubectl apply -f live/local/_bootstrap/coredns-custom.yaml
