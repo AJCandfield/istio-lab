@@ -38,9 +38,13 @@ serviceAccount:
 strategy:
   type: Recreate
 volumeMounts:
+  - mountPath: /tmp
+    name: tmp
   - mountPath: /var/dex
     name: data
 volumes:
+  - emptyDir: {}
+    name: tmp
   - name: data
     persistentVolumeClaim:
       claimName: dex
