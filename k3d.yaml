@@ -28,13 +28,6 @@ ports:
     nodeFilters:
       - loadbalancer
 
-files:
-  - description: CoreDNS override for the local Dex issuer
-    source: k3d/coredns-custom.yaml
-    destination: /var/lib/rancher/k3s/server/manifests/coredns-custom.yaml
-    nodeFilters:
-      - server:0
-
 options:
   k3d:
     wait: true
