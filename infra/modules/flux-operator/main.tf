@@ -15,18 +15,6 @@ resource "kubernetes_namespace_v1" "flux" {
   }
 }
 
-resource "kubernetes_secret_v1" "web_config" {
-  metadata {
-    name      = "flux-web-config"
-    namespace = kubernetes_namespace_v1.flux.metadata[0].name
-  }
-
-  data_wo = {
-    "config.yaml" = var.flux_web_config
-  }
-  data_wo_revision = var.flux_web_config_revision
-}
-
 resource "helm_release" "flux_operator" {
   name             = "flux-operator"
   namespace        = kubernetes_namespace_v1.flux.metadata[0].name
@@ -38,6 +26,4 @@ resource "helm_release" "flux_operator" {
   timeout         = 300
   values          = [file("${path.module}/values.yaml")]
   wait            = true
-
-  depends_on = [kubernetes_secret_v1.web_config]
 }

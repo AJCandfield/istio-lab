@@ -3,7 +3,7 @@
 This repository provisions a local k3d service-mesh lab with a hybrid Terraform and GitOps workflow:
 
 - k3d creates and deletes the local cluster.
-- Terragrunt and Terraform own the platform: Flux, Istio, Kyverno, Dex, cluster policy, namespaces, and bootstrap Secrets.
+- Terragrunt and Terraform own the platform: Flux, Istio, Kyverno, cluster policy, namespaces, and bootstrap Secrets.
 - Flux reconciles the application manifests under [`k8s/components/apps`](k8s/components/apps/).
 
 ## Prerequisites
@@ -33,8 +33,6 @@ Clusters created before the Terragrunt migration do not have compatible Terrafor
 mise exec -- just cluster-delete
 mise exec -- just up
 ```
-
-The `istio-lab-dex` Docker volume survives cluster deletion.
 
 ## Flux source
 
