@@ -27,7 +27,7 @@ This creates the k3d cluster when necessary, applies the Terragrunt units in dep
 
 Use `mise exec -- just plan` to inspect platform changes and `mise exec -- just check` to inspect cluster and Flux health. On an unbootstrapped cluster, planning covers the base units and reports CRD-dependent units as skipped until their controllers are installed. See [`infra/README.md`](infra/README.md) for ownership boundaries, configuration, state, secrets, and teardown.
 
-Clusters created before the Terragrunt migration do not have compatible Terraform state. Delete and recreate such a cluster before the first `just up`:
+Clusters created before the namespace-oriented Terragrunt state layout do not have compatible Terraform state. Delete and recreate such a cluster before the first `just up`:
 
 ```sh
 mise exec -- just cluster-delete
