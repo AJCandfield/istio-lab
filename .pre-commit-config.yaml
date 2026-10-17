@@ -17,3 +17,20 @@ repos:
     rev: 0494aa7fa1314e98913a41227d8f0a515b2c1049 # frozen: 0.38.2
     hooks:
       - id: check-renovate
+  - repo: local
+    hooks:
+      - id: terraform-fmt
+        name: terraform fmt
+        entry: mise exec -- terraform fmt -check -recursive infra/modules
+        language: system
+        pass_filenames: false
+      - id: terragrunt-hcl-format
+        name: terragrunt hcl format
+        entry: mise exec -- terragrunt hcl format --check --working-dir infra/live
+        language: system
+        pass_filenames: false
+      - id: validate-manifests
+        name: validate Kubernetes manifests
+        entry: mise exec -- scripts/validate-manifests.sh
+        language: system
+        pass_filenames: false

@@ -8,12 +8,13 @@
   ],
   "dependencyDashboard": true,
   "enabledManagers": [
+    "custom.regex",
     "flux",
     "github-actions",
-    "helmfile",
     "kubernetes",
     "mise",
-    "pre-commit"
+    "pre-commit",
+    "terraform"
   ],
   "flux": {
     "managerFilePatterns": [
@@ -28,6 +29,17 @@
       "/(^|/)tools/debug-curl/.+\\.ya?ml$/"
     ]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)infra/live/.+/cluster\\.hcl$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: registryUrl=(?<registryUrl>\\S+))?\\s+[a-z_]+\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ]
+    }
+  ],
   "minimumReleaseAge": "14 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
   "internalChecksFilter": "strict",
@@ -50,17 +62,6 @@
       "groupName": "Mise tool updates",
       "groupSlug": "mise-tool-updates",
       "automerge": true
-    },
-    {
-      "description": "Group Istio Helm chart updates",
-      "matchManagers": [
-        "flux"
-      ],
-      "matchFileNames": [
-        "k8s/components/infra/istio/**/*.yaml"
-      ],
-      "groupName": "Istio Helm charts",
-      "groupSlug": "istio-helm-charts"
     },
     {
       "description": "Keep major updates manual",

@@ -28,14 +28,6 @@ backend = "aqua:helm/helm"
 checksum = "sha256:d3870437e1e95b67f8edbde964156c84a26503f560821d40c542441658934fba"
 url = "https://get.helm.sh/helm-v4.3.0-darwin-arm64.tar.gz"
 
-[[tools.helmfile]]
-version = "1.8.1"
-backend = "aqua:helmfile/helmfile"
-
-[tools.helmfile."platforms.macos-arm64"]
-checksum = "sha256:62a6b086bdd7a934ff4a36d4974446d7271566b88db200b3956053a9b388fed8"
-url = "https://github.com/helmfile/helmfile/releases/download/v1.8.1/helmfile_1.8.1_darwin_arm64.tar.gz"
-
 [[tools.istioctl]]
 version = "1.31.1"
 backend = "aqua:istio/istio/istioctl"
@@ -59,6 +51,14 @@ backend = "aqua:k3d-io/k3d"
 [tools.k3d."platforms.macos-arm64"]
 checksum = "sha256:fe106541d5d0a3f18debcd4d432a16f8c0ce3e6ddc06f8fbb6f696a122313e00"
 url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-darwin-arm64"
+
+[[tools.kubeconform]]
+version = "0.8.0"
+backend = "aqua:yannh/kubeconform"
+
+[tools.kubeconform."platforms.macos-arm64"]
+checksum = "sha256:f84f4dfbebf4a6b0b230385fa065a39ea35e02608c2b50d025dcf64775a69d67"
+url = "https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-darwin-arm64.tar.gz"
 
 [[tools.kubectl]]
 version = "1.37.1"
@@ -102,3 +102,19 @@ url = "https://github.com/getsops/sops/releases/download/v3.13.3/sops-v3.13.3.da
 
 [tools.sops."platforms.macos-arm64".provenance.slsa]
 url = "https://github.com/getsops/sops/releases/download/v3.13.3/sops-v3.13.3.intoto.jsonl"
+
+[[tools.terraform]]
+version = "1.16.6"
+backend = "aqua:hashicorp/terraform"
+
+[tools.terraform."platforms.macos-arm64"]
+checksum = "sha256:85e1bc78ab45bdc5f82a7bac3929e37d072834a584d22583a2498dc67bb624cd"
+url = "https://releases.hashicorp.com/terraform/1.16.6/terraform_1.16.6_darwin_arm64.zip"
+
+[[tools.terragrunt]]
+version = "1.1.6"
+backend = "aqua:gruntwork-io/terragrunt"
+
+[tools.terragrunt."platforms.macos-arm64"]
+checksum = "sha256:c801b7c085a893ccbc5b9844522415e7bf1486d0a11341db793e76e61dc4c5f5"
+url = "https://github.com/gruntwork-io/terragrunt/releases/download/v1.1.6/terragrunt_darwin_arm64.tar.gz"

@@ -1,22 +1,49 @@
 # Istio Lab
 
-Install the project tools and Git hooks:
+This repository provisions a local k3d service-mesh lab with a hybrid Terraform and GitOps workflow:
+
+- k3d creates and deletes the local cluster.
+- Terragrunt and Terraform own the platform: Flux, Istio, Kyverno, cluster policy, namespaces, and bootstrap Secrets.
+- Flux reconciles the application manifests under [`k8s/components/apps`](k8s/components/apps/).
+
+## Prerequisites
+
+Install and start Docker, then place the repository age identity at `~/.config/mise/istio-lab-age.txt`. The identity must match the public recipient in [`.sops.yaml`](.sops.yaml); obtain it through a secure channel rather than committing it.
+
+Install the pinned tools and Git hooks:
 
 ```sh
 mise install
-pre-commit install
+mise exec -- pre-commit install
 ```
 
-The repository uses Flux to reconcile the lab components. Flux installs Istio and Kyverno from pinned Helm charts and applies the lab services to the `main` namespace from Kubernetes manifests. Infrastructure workloads remain outside the mesh. The ingress gateway uses Istio's gateway injection template to configure its primary proxy container; it does not receive an additional sidecar. The debug container remains an imperative local tool.
+## Provision the lab
 
-See the [bootstrap instructions](live/local/_bootstrap/README.md#bootstrap) to install Flux on the local cluster.
+```sh
+mise exec -- just up
+```
 
-## Git credentials
+This creates the k3d cluster when necessary, applies the Terragrunt units in dependency order, waits for Flux, and reconciles the applications. Every Kubernetes command is pinned to `k3d-istio-lab`; `KUBECONFIG` may select the file containing that context.
 
-Create a fine-grained GitHub token that can read repository contents. The token is stored in the root [`.env.json`](.env.json), encrypted with SOPS and a repository-specific age identity at `~/.config/mise/istio-lab-age.txt`. Mise decrypts the file when it loads the project environment.
+Use `mise exec -- just plan` to inspect platform changes and `mise exec -- just check` to inspect cluster and Flux health. On an unbootstrapped cluster, planning covers the base units and reports CRD-dependent units as skipped until their controllers are installed. See [`infra/README.md`](infra/README.md) for ownership boundaries, configuration, state, secrets, and teardown.
 
-The public age recipient is committed in [`.sops.yaml`](.sops.yaml); never commit the private identity or a plaintext token. CI disables Mise environment loading and does not receive the age identity.
+Clusters created before the Terragrunt migration do not have compatible Terraform state. Delete and recreate such a cluster before the first `just up`:
+
+```sh
+mise exec -- just cluster-delete
+mise exec -- just up
+```
+
+## Flux source
+
+Flux defaults to this repository's `main` branch. A pushed fork or feature branch can be tested with fully qualified overrides:
+
+```sh
+FLUX_GIT_URL=https://github.com/example/istio-lab.git \
+FLUX_GIT_REF=refs/heads/example-branch \
+mise exec -- just up
+```
 
 ## Debug container
 
-Open an interactive shell in the debug container with `just debug-curl-up` and remove it with `just debug-curl-down`.
+Open an interactive shell in the debug container with `mise exec -- just debug-curl-up` and remove it with `mise exec -- just debug-curl-down`.

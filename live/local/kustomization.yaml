@@ -1,22 +1,4 @@
-# This file is the Kustomize entry point for the local cluster.
-#
-# During bootstrap, the Flux Operator creates a root Flux Kustomization named
-# flux. It watches the live/local directory in the Git repository and
-# uses this file to apply the child Flux Kustomizations listed below. Each child
-# reconciles one part of the cluster, while its spec.dependsOn field defines the
-# reconciliation DAG. The order of the resources below does not control when
-# they run.
-#
-# Useful operator commands:
-#   flux get kustomizations --all-namespaces
-#   flux reconcile kustomization flux --namespace flux --with-source
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespaces/flux/reconciliation/sources.yaml
-  - namespaces/flux/reconciliation/dex.yaml
-  - namespaces/flux/reconciliation/istio-control-plane.yaml
-  - namespaces/flux/reconciliation/istio-ingress.yaml
-  - namespaces/flux/reconciliation/kyverno.yaml
-  - namespaces/flux/reconciliation/kyverno-policies.yaml
-  - namespaces/flux/reconciliation/main.yaml
+  - reconciliation/apps.yaml
