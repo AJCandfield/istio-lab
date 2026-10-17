@@ -21,3 +21,9 @@ resource "kubernetes_manifest" "flux" {
 
   depends_on = [kubernetes_secret_v1.git_credentials]
 }
+
+resource "kubernetes_manifest" "route" {
+  manifest = yamldecode(file("${path.module}/manifests/route.yaml"))
+
+  depends_on = [kubernetes_manifest.flux]
+}
