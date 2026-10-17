@@ -30,17 +30,35 @@ plan:
     kubeconfig="${KUBECONFIG:-$HOME/.kube/config}"
     context="k3d-istio-lab"
     scripts/verify-local-cluster.sh "$kubeconfig" "$context"
-    terragrunt run plan --working-dir infra/live/local/flux-operator --non-interactive --tf-path terraform
-    terragrunt run plan --working-dir infra/live/local/platform --non-interactive --tf-path terraform
-    if kubectl --kubeconfig "$kubeconfig" --context "$context" get crd gateways.networking.istio.io virtualservices.networking.istio.io validatingpolicies.policies.kyverno.io >/dev/null 2>&1; then
-      terragrunt run plan --working-dir infra/live/local/platform-config --non-interactive --tf-path terraform
+
+    base_units=(
+      flux/_resources
+      flux/operator
+      istio-system/_resources
+      istio-system/control-plane
+      istio-ingress/_resources
+      kyverno/_resources
+      kyverno/controller
+      main/_resources
+    )
+    for unit in "${base_units[@]}"; do
+      terragrunt run plan --working-dir "infra/live/local/$unit" --non-interactive --tf-path terraform
+    done
+
+    if kubectl --kubeconfig "$kubeconfig" --context "$context" get crd gateways.networking.istio.io >/dev/null 2>&1; then
+      terragrunt run plan --working-dir infra/live/local/istio-ingress/gateway --non-interactive --tf-path terraform
     else
-      printf 'Skipping platform-config plan until the Istio and Kyverno CRDs are installed.\n'
+      printf 'Skipping istio-ingress/gateway plan until the Istio Gateway CRD is installed.\n'
     fi
-    if kubectl --kubeconfig "$kubeconfig" --context "$context" get crd fluxinstances.fluxcd.controlplane.io >/dev/null 2>&1; then
-      terragrunt run plan --working-dir infra/live/local/flux-instance --non-interactive --tf-path terraform
+    if kubectl --kubeconfig "$kubeconfig" --context "$context" get crd validatingpolicies.policies.kyverno.io >/dev/null 2>&1; then
+      terragrunt run plan --working-dir infra/live/local/kyverno/policies --non-interactive --tf-path terraform
     else
-      printf 'Skipping flux-instance plan until the Flux Operator CRD is installed.\n'
+      printf 'Skipping kyverno/policies plan until the Kyverno ValidatingPolicy CRD is installed.\n'
+    fi
+    if kubectl --kubeconfig "$kubeconfig" --context "$context" get crd fluxinstances.fluxcd.controlplane.io virtualservices.networking.istio.io >/dev/null 2>&1; then
+      terragrunt run plan --working-dir infra/live/local/flux/instance --non-interactive --tf-path terraform
+    else
+      printf 'Skipping flux/instance plan until the FluxInstance and Istio VirtualService CRDs are installed.\n'
     fi
 
 validate:

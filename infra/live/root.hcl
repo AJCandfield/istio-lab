@@ -3,8 +3,10 @@ locals {
   state_path   = "${get_repo_root()}/infra/live/${path_relative_to_include()}/terraform.tfstate"
 
   helm_units = [
-    "local/flux-operator",
-    "local/platform",
+    "local/flux/operator",
+    "local/istio-ingress/gateway",
+    "local/istio-system/control-plane",
+    "local/kyverno/controller",
   ]
   helm_provider = (
     contains(local.helm_units, path_relative_to_include()) ?

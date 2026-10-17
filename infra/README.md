@@ -4,16 +4,16 @@ Terragrunt composes the local platform from the Terraform modules in this direct
 
 ## Hierarchy and ownership
 
-Reusable Terraform modules are kept under `modules`, while `live` contains the Terragrunt root, local-cluster context, ordered units, and encrypted inputs.
+Reusable Terraform modules are kept under `modules`. Deployments and CRD-backed configuration use component-specific modules, while the small `namespace` module is shared. The Terragrunt units under `live/local` are grouped by Kubernetes namespace; each `_resources` unit creates its parent namespace with the typed Kubernetes provider resource.
 
-The Terragrunt dependency order is:
+The dependency order is:
 
-1. `flux-operator` installs the operator and its Web UI.
-2. `platform` installs Istio, Kyverno, and their namespaces.
-3. `platform-config` applies resources that require the Istio and Kyverno CRDs.
-4. `flux-instance` installs Flux with a configurable Git source.
+1. The `_resources` units create the `flux`, `istio-system`, `istio-ingress`, `kyverno`, and `main` namespaces.
+2. `flux/operator`, `istio-system/control-plane`, and `kyverno/controller` install their Helm releases.
+3. `istio-ingress/gateway` installs the ingress release and its Istio `Gateway`, while `kyverno/policies` applies Kyverno policy resources.
+4. `flux/instance` creates the Git credentials, Flux instance, and the Flux UI's Istio route.
 
-Flux owns only the application reconciliation under [`live/local`](../live/local/). A resource must not be managed by both Terraform and Flux.
+Custom resources are represented by `kubernetes_manifest`; built-in resources use typed Kubernetes provider resources when available. Flux owns only the application reconciliation under [`live/local`](../live/local/). A resource must not be managed by both Terraform and Flux.
 
 ## Configuration
 
