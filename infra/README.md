@@ -8,8 +8,8 @@ Reusable Terraform modules are kept under `modules`, while `live` contains the T
 
 The Terragrunt dependency order is:
 
-1. `flux-operator` installs the operator and its Web UI bootstrap Secret.
-2. `platform` installs Istio, Kyverno, Dex, namespaces, persistence, and cluster DNS configuration.
+1. `flux-operator` installs the operator and its Web UI.
+2. `platform` installs Istio, Kyverno, and their namespaces.
 3. `platform-config` applies resources that require the Istio and Kyverno CRDs.
 4. `flux-instance` installs Flux with a configurable Git source.
 
@@ -33,25 +33,12 @@ Each Terragrunt leaf keeps local Terraform state beside its `terragrunt.hcl`; st
 
 Encrypted inputs live under [`live/local/secrets`](live/local/secrets/). Terragrunt decrypts them with SOPS and passes the values through ephemeral Terraform variables. The Kubernetes provider writes them through `data_wo`, so plaintext values are not persisted in Terraform state. The encrypted-file hash supplies the write-only revision, causing a Secret update whenever its SOPS file changes.
 
-Edit a Secret with the repository age identity:
+Edit the Git credential Secret with the repository age identity:
 
 ```sh
-sops infra/live/local/secrets/dex-config.sops.yaml
 sops infra/live/local/secrets/flux-git-credentials.sops.yaml
-sops infra/live/local/secrets/flux-web-config.sops.yaml
 ```
 
 ## Lifecycle
 
-Run `mise exec -- just --list` for the authoritative lifecycle tasks. Platform destruction leaves the k3d cluster intact, while cluster deletion retains the `istio-lab-dex` Docker volume. The storage deletion task removes that retained identity data explicitly.
-
-## Local Dex user
-
-The encrypted Dex configuration declares `test@istio-lab.localhost` as a static user. Retrieve its generated password when needed:
-
-```sh
-kubectl --context k3d-istio-lab --namespace dex get secret dex-config \
-  --output=jsonpath='{.data.password}' | base64 --decode
-```
-
-Sign in at `http://flux.localhost:8080`. The local `flux-web-test-user` ClusterRoleBinding grants this identity the `flux-web-admin` role and must not be copied to shared environments.
+Run `mise exec -- just --list` for the authoritative lifecycle tasks. Platform destruction leaves the k3d cluster intact.

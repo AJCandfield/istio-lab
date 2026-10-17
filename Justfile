@@ -53,9 +53,6 @@ platform-down:
 cluster-delete:
     k3d cluster delete istio-lab
 
-storage-delete:
-    docker volume rm istio-lab-dex
-
 check:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -64,7 +61,6 @@ check:
     scripts/verify-local-cluster.sh "$kubeconfig" "$context"
     kubectl --kubeconfig "$kubeconfig" --context "$context" wait node --all --for=condition=Ready --timeout=2m
     kubectl --kubeconfig "$kubeconfig" --context "$context" wait deployment --all --all-namespaces --for=condition=Available --timeout=5m
-    kubectl --kubeconfig "$kubeconfig" --context "$context" wait persistentvolumeclaim/dex --namespace dex --for=jsonpath='{.status.phase}'=Bound --timeout=2m
     kubectl --kubeconfig "$kubeconfig" --context "$context" wait gitrepository --all --namespace flux --for=condition=Ready --timeout=2m
     kubectl --kubeconfig "$kubeconfig" --context "$context" wait kustomization --all --namespace flux --for=condition=Ready --timeout=5m
     kubectl --kubeconfig "$kubeconfig" --context "$context" get nodes

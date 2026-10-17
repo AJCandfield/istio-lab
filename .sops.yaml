@@ -1,4 +1,4 @@
 creation_rules:
   - path_regex: \.sops\.yaml$
-    encrypted_regex: ^(config\.yaml|password|username)$
+    encrypted_regex: ^(password|username)$
     age: age13xvjrqrtj7pmr6xu5stwcyrhgvtwskarvj00eadxag7surslmf7qw23hkl

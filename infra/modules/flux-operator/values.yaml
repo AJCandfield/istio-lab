@@ -9,4 +9,3 @@ resources:
     memory: 256Mi
 web:
   enabled: true
-  configSecretName: flux-web-config

@@ -10,11 +10,6 @@ servers: 1
 agents: 1
 image: rancher/k3s:v1.36.5-k3s1
 
-volumes:
-  - volume: istio-lab-dex:/var/lib/istio-lab/dex
-    nodeFilters:
-      - agent:0
-
 kubeAPI:
   host: localhost
   hostIP: 127.0.0.1
@@ -44,10 +39,6 @@ options:
       - arg: --cluster-cidr=10.10.0.0/16
         nodeFilters:
           - server:*
-    nodeLabels:
-      - label: storage.istio-lab/dex=true
-        nodeFilters:
-          - agent:0
   kubeconfig:
     updateDefaultKubeconfig: true
     switchCurrentContext: false
