@@ -41,4 +41,4 @@ sops infra/live/local/secrets/flux-git-credentials.sops.yaml
 
 ## Lifecycle
 
-Run `mise exec -- just --list` for the authoritative lifecycle tasks. Platform destruction leaves the k3d cluster intact.
+Run Terragrunt from the repository root against `infra/live/local`. Applying or destroying all units follows their dependency graph; destroying the platform leaves the k3d cluster intact.
