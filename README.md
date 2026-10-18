@@ -20,19 +20,11 @@ mise exec -- pre-commit install
 ## Provision the lab
 
 ```sh
-mise exec -- just up
+mise exec -- k3d cluster create --config k3d.yaml
+mise exec -- terragrunt run --all apply --working-dir infra/live/local --non-interactive --tf-path terraform
 ```
 
-This creates the k3d cluster when necessary, applies the Terragrunt units in dependency order, waits for Flux, and reconciles the applications. Every Kubernetes command is pinned to `k3d-istio-lab`; `KUBECONFIG` may select the file containing that context.
-
-Use `mise exec -- just plan` to inspect platform changes and `mise exec -- just check` to inspect cluster and Flux health. On an unbootstrapped cluster, planning covers the base units and reports CRD-dependent units as skipped until their controllers are installed. See [`infra/README.md`](infra/README.md) for ownership boundaries, configuration, state, secrets, and teardown.
-
-Clusters created before the Terragrunt migration do not have compatible Terraform state. Delete and recreate such a cluster before the first `just up`:
-
-```sh
-mise exec -- just cluster-delete
-mise exec -- just up
-```
+The Terragrunt units install Flux and the platform in dependency order. Flux then reconciles the applications. `KUBECONFIG` may select the file containing the fixed `k3d-istio-lab` context. See [`infra/README.md`](infra/README.md) for ownership boundaries, configuration, state, secrets, and teardown.
 
 ## Flux source
 
@@ -41,9 +33,9 @@ Flux defaults to this repository's `main` branch. A pushed fork or feature branc
 ```sh
 FLUX_GIT_URL=https://github.com/example/istio-lab.git \
 FLUX_GIT_REF=refs/heads/example-branch \
-mise exec -- just up
+mise exec -- terragrunt run --all apply --working-dir infra/live/local --non-interactive --tf-path terraform
 ```
 
 ## Debug container
 
-Open an interactive shell in the debug container with `mise exec -- just debug-curl-up` and remove it with `mise exec -- just debug-curl-down`.
+The optional debug container manifest and usage commands are documented in [`tools/README.md`](tools/README.md).

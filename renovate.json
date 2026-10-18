@@ -33,7 +33,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/(^|/)infra/live/.+/cluster\\.hcl$/"
+        "/(^|/)infra/live/.+/(?:cluster|service)\\.hcl$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: registryUrl=(?<registryUrl>\\S+))?\\s+[a-z_]+\\s*=\\s*\"(?<currentValue>[^\"]+)\""

@@ -1,5 +1,9 @@
 # Repository instructions
 
+## Documentation
+
+- Keep README files as durable, reader-focused documentation. Do not use them as work logs, changelogs, or records of file moves and other implementation history.
+
 ## Local cluster
 
 - The `local` cluster has no availability requirements; breaking changes may be applied immediately without preserving uptime.

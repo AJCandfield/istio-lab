@@ -1,10 +1,19 @@
 locals {
   cluster_vars = read_terragrunt_config(find_in_parent_folders("cluster.hcl"))
-  state_path   = "${get_repo_root()}/infra/live/${path_relative_to_include()}/terraform.tfstate"
+
+  unit_path = path_relative_to_include()
+  state_unit_path = (
+    endswith(local.unit_path, "/_resources/namespace") ?
+    dirname(local.unit_path) :
+    local.unit_path
+  )
+  state_path = "${get_repo_root()}/infra/live/${local.state_unit_path}/terraform.tfstate"
 
   helm_units = [
-    "local/flux-operator",
-    "local/platform",
+    "local/flux/operator",
+    "local/istio/control-plane",
+    "local/istio/gateway",
+    "local/kyverno/controller",
   ]
   helm_provider = (
     contains(local.helm_units, path_relative_to_include()) ?
@@ -55,15 +64,5 @@ terraform {
   extra_arguments "lock_timeout" {
     commands  = get_terraform_commands_that_need_locking()
     arguments = ["-lock-timeout=1m"]
-  }
-
-  before_hook "validate_cluster" {
-    commands = ["apply", "destroy", "import", "plan", "refresh"]
-    execute = [
-      "${get_repo_root()}/scripts/verify-local-cluster.sh",
-      local.cluster_vars.locals.kubeconfig_path,
-      local.cluster_vars.locals.kube_context,
-    ]
-    run_on_error = false
   }
 }

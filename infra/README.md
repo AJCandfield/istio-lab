@@ -4,20 +4,22 @@ Terragrunt composes the local platform from the Terraform modules in this direct
 
 ## Hierarchy and ownership
 
-Reusable Terraform modules are kept under `modules`, while `live` contains the Terragrunt root, local-cluster context, ordered units, and encrypted inputs.
+Reusable Terraform modules are kept under `modules`. Deployments and CRD-backed configuration use component-specific modules, while the small `namespace` module is shared. Terragrunt units under `live/local` are grouped first by cluster and then by service. Each service declares its deployment metadata in `service.hcl`; shared prerequisites and configuration, including namespaces and encrypted inputs, live under the service's `_resources` directory.
 
-The Terragrunt dependency order is:
+The dependency order is:
 
-1. `flux-operator` installs the operator and its Web UI.
-2. `platform` installs Istio, Kyverno, and their namespaces.
-3. `platform-config` applies resources that require the Istio and Kyverno CRDs.
-4. `flux-instance` installs Flux with a configurable Git source.
+1. The namespace units under each service's `_resources` directory create the `flux`, `istio-system`, `istio-ingress`, `kyverno`, and `main` namespaces.
+2. `flux/operator`, `istio/control-plane`, and `kyverno/controller` install their Helm releases.
+3. `istio/gateway` installs the ingress release and its Istio `Gateway`, while `kyverno/policies` uses the Kyverno module in policy-only mode after the Kyverno CRDs exist.
+4. `flux/instance` creates the Git credentials, Flux instance, and the Flux UI's Istio route.
 
-Flux owns only the application reconciliation under [`live/local`](../live/local/). A resource must not be managed by both Terraform and Flux.
+Custom resources are represented by `kubernetes_manifest`; built-in resources use typed Kubernetes provider resources when available. Flux owns only the application reconciliation under [`live/local`](../live/local/). A resource must not be managed by both Terraform and Flux.
+
+Create new modules with `mise exec -- just make-tf-module`. The scaffold supplies the standard file layout and provider constraints. The terraform-docs pre-commit hook updates only modules with changed Terraform files and preserves hand-written README content outside its marker block.
 
 ## Configuration
 
-[`live/local/cluster.hcl`](live/local/cluster.hcl) contains local versions and defaults. These environment variables override machine- or invocation-specific values:
+[`live/local/cluster.hcl`](live/local/cluster.hcl) contains cluster connection defaults. Service names, namespaces, versions, and service-specific settings live in each service's `service.hcl`. These environment variables override machine- or invocation-specific values:
 
 | Variable | Default |
 | --- | --- |
@@ -29,16 +31,16 @@ Use a fully qualified Git ref such as `refs/heads/my-branch`. The context is int
 
 ## State and secrets
 
-Each Terragrunt leaf keeps local Terraform state beside its `terragrunt.hcl`; state and backup files are ignored by Git. The committed `.terraform.lock.hcl` files pin provider checksums.
+Terragrunt keeps local Terraform state under each unit path, and state and backup files are ignored by Git. Single namespace units write state to their parent `_resources` directory while their configuration lives in `_resources/namespace`; services with multiple namespace units retain separate state paths. The committed `.terraform.lock.hcl` files pin provider checksums.
 
-Encrypted inputs live under [`live/local/secrets`](live/local/secrets/). Terragrunt decrypts them with SOPS and passes the values through ephemeral Terraform variables. The Kubernetes provider writes them through `data_wo`, so plaintext values are not persisted in Terraform state. The encrypted-file hash supplies the write-only revision, causing a Secret update whenever its SOPS file changes.
+Encrypted inputs live with their owning service under `_resources`. Terragrunt decrypts them with SOPS and passes the values through ephemeral Terraform variables. The Kubernetes provider writes them through `data_wo`, so plaintext values are not persisted in Terraform state. The encrypted-file hash supplies the write-only revision, causing a Secret update whenever its SOPS file changes.
 
-Edit the Git credential Secret with the repository age identity:
+Edit the Flux Git credential Secret with the repository age identity:
 
 ```sh
-sops infra/live/local/secrets/flux-git-credentials.sops.yaml
+sops infra/live/local/flux/_resources/flux-git-credentials.sops.yaml
 ```
 
 ## Lifecycle
 
-Run `mise exec -- just --list` for the authoritative lifecycle tasks. Platform destruction leaves the k3d cluster intact.
+Run Terragrunt from the repository root against `infra/live/local`. Applying or destroying all units follows their dependency graph; destroying the platform leaves the k3d cluster intact.

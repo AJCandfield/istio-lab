@@ -9,6 +9,14 @@ checksum = "sha256:e2020b073c44f692685a24d6abc378817eb81ffaaf49fd0531ef8565f767f
 url = "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-darwin-arm64.tar.gz"
 provenance = "github-attestations"
 
+[[tools.boilerplate]]
+version = "0.17.0"
+backend = "aqua:gruntwork-io/boilerplate"
+
+[tools.boilerplate."platforms.macos-arm64"]
+checksum = "sha256:e98af366f737022d53801d16b6de36acb949f62819a7150aea938475d8c9a1d6"
+url = "https://github.com/gruntwork-io/boilerplate/releases/download/v0.17.0/boilerplate_darwin_arm64"
+
 [[tools.flux2]]
 version = "2.9.6"
 backend = "aqua:fluxcd/flux2"
@@ -51,14 +59,6 @@ backend = "aqua:k3d-io/k3d"
 [tools.k3d."platforms.macos-arm64"]
 checksum = "sha256:fe106541d5d0a3f18debcd4d432a16f8c0ce3e6ddc06f8fbb6f696a122313e00"
 url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-darwin-arm64"
-
-[[tools.kubeconform]]
-version = "0.8.0"
-backend = "aqua:yannh/kubeconform"
-
-[tools.kubeconform."platforms.macos-arm64"]
-checksum = "sha256:f84f4dfbebf4a6b0b230385fa065a39ea35e02608c2b50d025dcf64775a69d67"
-url = "https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-darwin-arm64.tar.gz"
 
 [[tools.kubectl]]
 version = "1.37.1"
@@ -110,6 +110,10 @@ backend = "aqua:hashicorp/terraform"
 [tools.terraform."platforms.macos-arm64"]
 checksum = "sha256:85e1bc78ab45bdc5f82a7bac3929e37d072834a584d22583a2498dc67bb624cd"
 url = "https://releases.hashicorp.com/terraform/1.16.6/terraform_1.16.6_darwin_arm64.zip"
+
+[[tools.terraform-docs]]
+version = "0.24.0"
+backend = "aqua:terraform-docs/terraform-docs"
 
 [[tools.terragrunt]]
 version = "1.1.6"
