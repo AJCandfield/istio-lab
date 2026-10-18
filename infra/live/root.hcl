@@ -1,6 +1,13 @@
 locals {
   cluster_vars = read_terragrunt_config(find_in_parent_folders("cluster.hcl"))
-  state_path   = "${get_repo_root()}/infra/live/${path_relative_to_include()}/terraform.tfstate"
+
+  unit_path = path_relative_to_include()
+  state_unit_path = (
+    endswith(local.unit_path, "/_resources/namespace") ?
+    dirname(local.unit_path) :
+    local.unit_path
+  )
+  state_path = "${get_repo_root()}/infra/live/${local.state_unit_path}/terraform.tfstate"
 
   helm_units = [
     "local/flux/operator",

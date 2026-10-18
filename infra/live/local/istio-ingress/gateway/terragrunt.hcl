@@ -7,7 +7,7 @@ include "root" {
 }
 
 dependencies {
-  paths = ["../_resources", "../../istio-system/control-plane"]
+  paths = ["../_resources/namespace", "../../istio-system/control-plane"]
 }
 
 locals {

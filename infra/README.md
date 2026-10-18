@@ -4,16 +4,18 @@ Terragrunt composes the local platform from the Terraform modules in this direct
 
 ## Hierarchy and ownership
 
-Reusable Terraform modules are kept under `modules`. Deployments and CRD-backed configuration use component-specific modules, while the small `namespace` module is shared. The Terragrunt units under `live/local` are grouped by Kubernetes namespace; each `_resources` unit creates its parent namespace with the typed Kubernetes provider resource.
+Reusable Terraform modules are kept under `modules`. Deployments and CRD-backed configuration use component-specific modules, while the small `namespace` module is shared. The Terragrunt units under `live/local` are grouped by Kubernetes namespace; each `_resources/namespace` unit creates its parent namespace with the typed Kubernetes provider resource.
 
 The dependency order is:
 
-1. The `_resources` units create the `flux`, `istio-system`, `istio-ingress`, `kyverno`, and `main` namespaces.
+1. The `_resources/namespace` units create the `flux`, `istio-system`, `istio-ingress`, `kyverno`, and `main` namespaces.
 2. `flux/operator`, `istio-system/control-plane`, and `kyverno/controller` install their Helm releases.
-3. `istio-ingress/gateway` installs the ingress release and its Istio `Gateway`, while `kyverno/policies` applies Kyverno policy resources.
+3. `istio-ingress/gateway` installs the ingress release and its Istio `Gateway`, while `kyverno/policies` uses the Kyverno module in policy-only mode after the Kyverno CRDs exist.
 4. `flux/instance` creates the Git credentials, Flux instance, and the Flux UI's Istio route.
 
 Custom resources are represented by `kubernetes_manifest`; built-in resources use typed Kubernetes provider resources when available. Flux owns only the application reconciliation under [`live/local`](../live/local/). A resource must not be managed by both Terraform and Flux.
+
+Create new modules with `mise exec -- just make-tf-module`. The scaffold supplies the standard file layout and provider constraints. The terraform-docs pre-commit hook updates only modules with changed Terraform files and preserves hand-written README content outside its marker block.
 
 ## Configuration
 
@@ -29,7 +31,7 @@ Use a fully qualified Git ref such as `refs/heads/my-branch`. The context is int
 
 ## State and secrets
 
-Each Terragrunt leaf keeps local Terraform state beside its `terragrunt.hcl`; state and backup files are ignored by Git. The committed `.terraform.lock.hcl` files pin provider checksums.
+Terragrunt keeps local Terraform state under each unit path, and state and backup files are ignored by Git. Namespace units write state to their parent `_resources` directory while their configuration lives in `_resources/namespace`. The committed `.terraform.lock.hcl` files pin provider checksums.
 
 Encrypted inputs live under [`live/local/secrets`](live/local/secrets/). Terragrunt decrypts them with SOPS and passes the values through ephemeral Terraform variables. The Kubernetes provider writes them through `data_wo`, so plaintext values are not persisted in Terraform state. The encrypted-file hash supplies the write-only revision, causing a Secret update whenever its SOPS file changes.
 

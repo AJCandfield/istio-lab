@@ -1,0 +1,18 @@
+variables:
+  - name: ModuleType
+    order: 0
+    description: The provider shape required by the Terraform module.
+    type: enum
+    options:
+      - kubernetes
+      - helm
+
+  - name: ModuleName
+    order: 1
+    description: The lower-kebab-case name of the Terraform module.
+    type: string
+
+dependencies:
+  - name: Module
+    template-url: "{{ templateFolder }}/../../templates/module-{{ .ModuleType }}"
+    output-folder: "{{ outputFolder }}/{{ .ModuleName }}"

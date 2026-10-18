@@ -1,5 +1,5 @@
 terraform {
-  source = "${get_repo_root()}/infra/modules/kyverno-policies"
+  source = "${get_repo_root()}/infra/modules/kyverno"
 }
 
 include "root" {
@@ -8,4 +8,9 @@ include "root" {
 
 dependencies {
   paths = ["../controller"]
+}
+
+inputs = {
+  install_chart = false
+  policies      = []
 }

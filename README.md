@@ -26,13 +26,6 @@ mise exec -- terragrunt run --all apply --working-dir infra/live/local --non-int
 
 The Terragrunt units install Flux and the platform in dependency order. Flux then reconciles the applications. `KUBECONFIG` may select the file containing the fixed `k3d-istio-lab` context. See [`infra/README.md`](infra/README.md) for ownership boundaries, configuration, state, secrets, and teardown.
 
-Clusters created before the namespace-oriented Terragrunt state layout do not have compatible Terraform state. Delete and recreate such a cluster before applying the current configuration:
-
-```sh
-mise exec -- k3d cluster delete istio-lab
-mise exec -- k3d cluster create --config k3d.yaml
-```
-
 ## Flux source
 
 Flux defaults to this repository's `main` branch. A pushed fork or feature branch can be tested with fully qualified overrides:

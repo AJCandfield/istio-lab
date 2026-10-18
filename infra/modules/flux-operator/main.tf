@@ -1,4 +1,9 @@
-resource "helm_release" "flux_operator" {
+moved {
+  from = helm_release.flux_operator
+  to   = helm_release.this
+}
+
+resource "helm_release" "this" {
   name             = "flux-operator"
   namespace        = "flux"
   chart            = "oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator"

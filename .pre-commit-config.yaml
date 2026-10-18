@@ -17,6 +17,15 @@ repos:
     rev: 0494aa7fa1314e98913a41227d8f0a515b2c1049 # frozen: 0.38.2
     hooks:
       - id: check-renovate
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: 80c8033123f6d6b9ccd1a9458562ea4180742af7 # frozen: v1.109.2
+    hooks:
+      - id: terraform_docs
+        name: terraform docs for changed modules
+        args:
+          - --hook-config=--tool-version=0.24.0
+          - --args=--config=infra/modules/.terraform-docs.yml
+        files: ^infra/modules/(?!\.boilerplate/)[^/]+/.*\.tf$
   - repo: local
     hooks:
       - id: terraform-fmt

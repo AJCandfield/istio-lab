@@ -1,4 +1,9 @@
-resource "helm_release" "gateway" {
+moved {
+  from = helm_release.gateway
+  to   = helm_release.this
+}
+
+resource "helm_release" "this" {
   name       = "istio-ingress"
   namespace  = "istio-ingress"
   repository = "https://blob.istio.io/istio-release/charts"
@@ -11,8 +16,13 @@ resource "helm_release" "gateway" {
   wait            = true
 }
 
-resource "kubernetes_manifest" "gateway" {
+moved {
+  from = kubernetes_manifest.gateway
+  to   = kubernetes_manifest.this
+}
+
+resource "kubernetes_manifest" "this" {
   manifest = yamldecode(file("${path.module}/manifests/gateway.yaml"))
 
-  depends_on = [helm_release.gateway]
+  depends_on = [helm_release.this]
 }

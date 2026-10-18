@@ -7,7 +7,7 @@ include "root" {
 }
 
 dependencies {
-  paths = ["../_resources"]
+  paths = ["../_resources/namespace"]
 }
 
 locals {
