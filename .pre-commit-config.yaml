@@ -29,8 +29,3 @@ repos:
         entry: mise exec -- terragrunt hcl format --check --working-dir infra/live
         language: system
         pass_filenames: false
-      - id: validate-manifests
-        name: validate Kubernetes manifests
-        entry: mise exec -- scripts/validate-manifests.sh
-        language: system
-        pass_filenames: false

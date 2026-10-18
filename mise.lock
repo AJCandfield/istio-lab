@@ -52,14 +52,6 @@ backend = "aqua:k3d-io/k3d"
 checksum = "sha256:fe106541d5d0a3f18debcd4d432a16f8c0ce3e6ddc06f8fbb6f696a122313e00"
 url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-darwin-arm64"
 
-[[tools.kubeconform]]
-version = "0.8.0"
-backend = "aqua:yannh/kubeconform"
-
-[tools.kubeconform."platforms.macos-arm64"]
-checksum = "sha256:f84f4dfbebf4a6b0b230385fa065a39ea35e02608c2b50d025dcf64775a69d67"
-url = "https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-darwin-arm64.tar.gz"
-
 [[tools.kubectl]]
 version = "1.37.1"
 backend = "aqua:kubernetes/kubernetes/kubectl"

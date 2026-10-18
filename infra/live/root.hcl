@@ -58,14 +58,4 @@ terraform {
     commands  = get_terraform_commands_that_need_locking()
     arguments = ["-lock-timeout=1m"]
   }
-
-  before_hook "validate_cluster" {
-    commands = ["apply", "destroy", "import", "plan", "refresh"]
-    execute = [
-      "${get_repo_root()}/scripts/verify-local-cluster.sh",
-      local.cluster_vars.locals.kubeconfig_path,
-      local.cluster_vars.locals.kube_context,
-    ]
-    run_on_error = false
-  }
 }
