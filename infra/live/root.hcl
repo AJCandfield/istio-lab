@@ -11,8 +11,8 @@ locals {
 
   helm_units = [
     "local/flux/operator",
-    "local/istio-ingress/gateway",
-    "local/istio-system/control-plane",
+    "local/istio/control-plane",
+    "local/istio/gateway",
     "local/kyverno/controller",
   ]
   helm_provider = (

@@ -11,9 +11,9 @@ dependencies {
 }
 
 locals {
-  cluster_vars = read_terragrunt_config(find_in_parent_folders("cluster.hcl"))
+  service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 }
 
 inputs = {
-  chart_version = local.cluster_vars.locals.versions.kyverno_chart
+  chart_version = local.service_vars.locals.service.chart_version
 }

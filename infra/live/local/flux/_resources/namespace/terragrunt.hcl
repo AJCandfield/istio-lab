@@ -6,10 +6,8 @@ include "root" {
   path = find_in_parent_folders("root.hcl")
 }
 
-inputs = {
-  ignore_metadata_changes = true
-  labels = {
-    "istio-injection" = "disabled"
-  }
-  name = "flux"
+locals {
+  service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 }
+
+inputs = local.service_vars.locals.service.namespace
